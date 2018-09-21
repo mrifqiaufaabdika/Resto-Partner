@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Resto Patner</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="loss_connect">Gagal Terhubung ke Server</string>
+    <string name="memuat">Memuat...</string>
+
+</resources>
