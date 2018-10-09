@@ -11,7 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
+import com.example.abdialam.restopatner.activities.VerifyActifity;
+import com.example.abdialam.restopatner.activities.kurir.MainKurirActivity;
 import com.example.abdialam.restopatner.config.ServerConfig;
+import com.example.abdialam.restopatner.models.Kurir;
 import com.example.abdialam.restopatner.models.Restoran;
 import com.example.abdialam.restopatner.responses.ResponseAuth;
 import com.example.abdialam.restopatner.responses.ResponseSignIn;
@@ -34,7 +37,7 @@ public class SignInActivity extends AppCompatActivity {
     @BindView(R.id.btnDisplayToken)Button mDisplayToken;
     @BindView(R.id.token)
     TextView mToken;
-    String strPhone,value,message;
+    String strPhone,value,message,tipe;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,21 +61,24 @@ public class SignInActivity extends AppCompatActivity {
 
                     value = response.body().getValue();
                     message = response.body().getMessage();
+                    tipe = response.body().getTipe();
                     if(value.equals("1")){
-                        Restoran resto = response.body().getRestoran();
-                        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(mContext,VerifyActifity.class);
-                        intent.putExtra("phone",strPhone);
-                        intent.putExtra("resto",resto);
+                        if(tipe.equals("restoran")){
+                            Restoran resto = response.body().getRestoran();
+                            intent.putExtra("resto",resto);
+                        }else if(tipe.equals("kurir")){
+                            Kurir kurir = response.body().getKurir();
+                            intent.putExtra("kurir",kurir);
+                        }
                         startActivity(intent);
-
-
-
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        finish();
                     }else {
                         Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
                     }
                 }else {
-
+                    Toast.makeText(mContext, "gagal", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -85,7 +91,6 @@ public class SignInActivity extends AppCompatActivity {
 
 
     @OnClick(R.id.btnDisplayToken) void viewToken () {
-
         String Token = SharedPrefManager.getInstance(this).getDeviceToken();
         mToken.setText(Token);
     }

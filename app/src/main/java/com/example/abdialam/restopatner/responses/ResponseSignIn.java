@@ -1,19 +1,28 @@
 package com.example.abdialam.restopatner.responses;
 
+import com.example.abdialam.restopatner.models.Kurir;
 import com.example.abdialam.restopatner.models.Restoran;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ResponseSignIn {
+
     @SerializedName("value")
     @Expose
     private String value;
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("Restoran")
+    @SerializedName("tipe")
+    @Expose
+    private String tipe;
+    @SerializedName("restoran")
     @Expose
     private Restoran restoran;
+    @SerializedName("Kurir")
+    @Expose
+    private Kurir kurir;
+
 
     public String getValue() {
         return value;
@@ -31,12 +40,29 @@ public class ResponseSignIn {
         this.message = message;
     }
 
+    public String getTipe() {
+        return tipe;
+    }
+
+    public void setTipe(String tipe) {
+        this.tipe = tipe;
+    }
+
     public Restoran getRestoran() {
         return restoran;
     }
 
     public void setRestoran(Restoran restoran) {
         this.restoran = restoran;
+    }
+
+
+    public Kurir getKurir() {
+        return kurir;
+    }
+
+    public void setKurir(Kurir kurir) {
+        this.kurir = kurir;
     }
 }
 

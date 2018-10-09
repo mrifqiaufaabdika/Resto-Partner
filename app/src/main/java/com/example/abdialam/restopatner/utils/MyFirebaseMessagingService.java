@@ -3,7 +3,6 @@ package com.example.abdialam.restopatner.utils;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.abdialam.restopatner.activities.MainActivity;
 import com.example.abdialam.restopatner.activities.SplashActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;

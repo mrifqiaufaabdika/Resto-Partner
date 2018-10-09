@@ -7,11 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.abdialam.restopatner.R;
+import com.example.abdialam.restopatner.activities.resto.SignUpActivity;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -37,6 +36,8 @@ public class WelcomeActivity extends AppCompatActivity {
     @OnClick (R.id.btnSignIn) void signin (){
         Intent intent = new Intent(mContext,SignInActivity.class);
         startActivity(intent);
+        finish();
+
     }
 
     @OnClick (R.id.btnSignup) void signup (){
@@ -53,6 +54,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(mContext,SignUpActivity.class);
                 startActivity(intent);
+
                 finish();
             }
         });

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+    
+    
+    <Button
+        android:id="@+id/btnChooseFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:text="Choose file"/>
+    
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+    
+    <EditText
+        android:id="@+id/etNamaMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nama Menu"/>
+
+    <EditText
+        android:id="@+id/etHargaMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Harga Menu"/>
+
+    <EditText
+        android:id="@+id/etDeskripsi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Deskripsi"
+        android:lines="3"/>
+
+    <Button
+        android:id="@+id/btnSubmitMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tambah Menu"/>
+    
+    
+
+</LinearLayout>

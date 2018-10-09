@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+           />
+
+        <ImageButton
+            android:id="@+id/btnNavigation"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignRight="@id/map"
+            android:layout_alignBottom="@id/map"
+            android:layout_margin="15dp"
+            android:elevation="12dp"
+            android:src="@drawable/ic_navigation"
+            android:background="@drawable/roundbutton"/>
+
+
+        <LinearLayout
+            android:id="@+id/panelInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:layout_below="@id/map"
+            android:background="@android:color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Informasi Delivery :"
+                android:textSize="18sp"/>
+
+            <TextView
+
+                android:id="@+id/tvNamaPemesan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="M. Rifqi Aufa Abdika"
+                android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/tvPhonePemesan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+6281268475430"
+                android:textSize="14sp"/>
+            <TextView
+                android:id="@+id/tvAlamatAntar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jl. Srikandi Perumahan Wadya Graha 1 "
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linear2"
+            android:layout_below="@id/panelInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="32dp"
+            android:background="@android:color/white"
+            android:padding="10dp">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:id="@+id/bagtotal"
+                    android:textSize="@dimen/text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total"
+                    android:textColor="@color/textSub"
+                    android:background="#0000"
+                    android:gravity="left"
+                    />
+
+
+                <TextView
+                    android:layout_weight="1"
+                    android:id="@+id/tvTotal"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rp16.000.000"
+                    android:textColor="@color/Tex"
+                    android:background="#0000"
+                    android:gravity="left"
+                    />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linear2"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/rect"
+            android:layout_marginTop="32dp">
+
+                <TextView
+                    android:layout_weight="1"
+                    android:id="@+id/btn_sign_out"
+                    android:textSize="@dimen/text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pekerjaan Selesai"
+                    android:textColor="@color/Tex"
+                    android:background="#0000"
+                    android:padding="15dp"
+                    android:gravity="center" />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>
+

@@ -11,10 +11,15 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
+import com.example.abdialam.restopatner.activities.kurir.MainKurirActivity;
+import com.example.abdialam.restopatner.activities.resto.MainActivity;
 import com.example.abdialam.restopatner.config.ServerConfig;
+import com.example.abdialam.restopatner.models.Kurir;
 import com.example.abdialam.restopatner.models.Restoran;
+import com.example.abdialam.restopatner.responses.ResponseAuth;
 import com.example.abdialam.restopatner.rest.ApiService;
 import com.example.abdialam.restopatner.utils.SessionManager;
+import com.example.abdialam.restopatner.utils.SharedPrefManager;
 import com.github.irvingryan.VerifyCodeView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,57 +47,46 @@ public class VerifyActifity extends AppCompatActivity {
     @BindView(R.id.buttonSignIn)
     Button btnSigin ;
 
-    ApiService mApiService ;
+
 
 
     Context mContext;
     FirebaseAuth mAuth;
-    String codeSent,phone;
+    String codeSent,phone,index;
     ProgressDialog progressDialog;
     SessionManager sessionManager;
     Restoran resto;
+    Kurir kurir;
+    ApiService mApiservice;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify);
+        mApiservice = ServerConfig.getAPIService();
         mContext = this;
-        phone = getIntent().getStringExtra("phone");
-
+        kurir = new Kurir();
         resto = new Restoran();
-        mApiService = ServerConfig.getAPIService();
         sessionManager = new SessionManager(mContext);
         mAuth = FirebaseAuth.getInstance();
         ButterKnife.bind(this);
         getIncomingIntent();
 
 
-
-        Toast.makeText(mContext,phone, Toast.LENGTH_SHORT).show();
 //      Memanggil method untuk mengirim code
-        sendVerificationCode(phone);
+        //sendVerificationCode(phone);
     }
 
     @OnClick (R.id.buttonSignIn) void signin (){
         progressDialog = ProgressDialog.show(mContext,null,getString(R.string.memuat),true,false);
 //        untuk melakukan verifikasi dari code OTP yang di inputkan
-          verifySignInCode();
+         // verifySignInCode();
 //        jika menguji login tanpa menggunakan code OTP
-         //SessionUser();
+         SessionUser();
 
 
     }
-
-    private void SessionUser() {
-        progressDialog.dismiss();
-
-        Toast.makeText(getApplicationContext(),"login successfuli", Toast.LENGTH_LONG).show();
-        sessionManager.createLoginSession(resto);
-        Intent intent = new Intent(mContext, MainActivity.class);
-        startActivity(intent);
-    }
-
 
     private void verifySignInCode(){
         String code =  editTextCode.getText();
@@ -107,12 +101,8 @@ public class VerifyActifity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //to sucses login
-                            progressDialog.dismiss();
-
                             Toast.makeText(getApplicationContext(),"login successfuli", Toast.LENGTH_LONG).show();
-                            sessionManager.createLoginSession(resto);
-                            Intent intent = new Intent(mContext, MainActivity.class);
-                            startActivity(intent);
+                            SessionUser();
 
                             // ...
                         } else {
@@ -170,17 +160,62 @@ public class VerifyActifity extends AppCompatActivity {
         }
     };
 
-
-
-
-
-
     private void getIncomingIntent (){
 
-        if(getIntent().hasExtra("Resto")){
+        if(getIntent().hasExtra("resto")){
             resto = (Restoran)getIntent().getSerializableExtra("resto");
+            phone = resto.getPhone();
+            index = "1";
+        }else if(getIntent().hasExtra("kurir")){
+            kurir = (Kurir) getIntent().getSerializableExtra("kurir");
+            phone = kurir.getPhone();
+            index = "0";
         }
     }
+
+
+    private void SessionUser() {
+        progressDialog.dismiss();
+        String Token = SharedPrefManager.getInstance(this).getDeviceToken();
+        Intent intent;
+        if(index.equals("1")) {
+            sessionManager.createLoginSessionResto(resto);
+            intent = new Intent(mContext, MainActivity.class);
+            updateToken(resto.getIdPengguna().toString(),Token);
+
+        }else {
+            sessionManager.createLoginSessionKurir(kurir);
+            intent = new Intent(mContext, MainKurirActivity.class);
+            updateToken(kurir.getIdPengguna().toString(),Token);
+        }
+        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NO_HISTORY|Intent.FLAG_ACTIVITY_NEW_TASK);
+        finish();
+
+    }
+
+    private void updateToken(String id_pengguna,String token) {
+        mApiservice.updateToken(id_pengguna,token).enqueue(new Callback<ResponseAuth>() {
+            @Override
+            public void onResponse(Call<ResponseAuth> call, Response<ResponseAuth> response) {
+                if(response.isSuccessful()){
+                    String value = response.body().getValue();
+                    if(value.equals("1")){
+                        Toast.makeText(mContext,"Token Update",Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(mContext,"Token Update Filure",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseAuth> call, Throwable t) {
+                Toast.makeText(mContext,R.string.loss_connect,Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
 
     @Override
     protected void onPause() {

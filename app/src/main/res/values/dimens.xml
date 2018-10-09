@@ -3,4 +3,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="imageTop">35dp</dimen>
+    <dimen name="text">15dp</dimen>
+    <dimen name="textSub">14dp</dimen>
+    <dimen name="textsub">14dp</dimen>
 </resources>

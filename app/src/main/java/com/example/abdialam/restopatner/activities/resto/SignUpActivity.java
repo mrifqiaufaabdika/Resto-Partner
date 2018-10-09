@@ -1,4 +1,4 @@
-package com.example.abdialam.restopatner.activities;
+package com.example.abdialam.restopatner.activities.resto;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
+import com.example.abdialam.restopatner.activities.SignInActivity;
+import com.example.abdialam.restopatner.activities.WelcomeActivity;
 import com.example.abdialam.restopatner.adapter.StepperAdapter;
 import com.example.abdialam.restopatner.config.ServerConfig;
 import com.example.abdialam.restopatner.fragment.StepFragmentDelivery;
@@ -58,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity implements StepperLayout.S
 
     }
 
-
+// on complite stepper
     @Override
     public void onCompleted(View completeButton) {
         progressDialog = ProgressDialog.show(mContext,null,getString(R.string.memuat),true,false);
@@ -105,6 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements StepperLayout.S
 //        Toast.makeText(this,resto.getRestoranPemilikPhone(), Toast.LENGTH_SHORT).show();
 //        Toast.makeText(this,resto.getTarifDelivery(), Toast.LENGTH_SHORT).show();
 
+//sign up restoran baru
         mApiService.signupRequest(restoran_nama,restoran_phone,restoran_email,
                 restoran_alamat,restoran_lokasi,restoran_deskripsi,
                 restoran_gambar,restoan_pemilik_nama,restoan_pemilik_phone,
@@ -138,6 +141,7 @@ public class SignUpActivity extends AppCompatActivity implements StepperLayout.S
 
     }
 
+//input kategori restoran
     public void inputKategori (String ID){
 
         for (int i = 0; i < id_kategori.size() ; i++) {
