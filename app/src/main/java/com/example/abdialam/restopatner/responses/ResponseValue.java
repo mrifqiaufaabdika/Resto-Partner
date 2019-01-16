@@ -4,20 +4,19 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ResponseValue {
-
-    @SerializedName("status")
+    @SerializedName("value")
     @Expose
-    private String status;
+    private String value;
     @SerializedName("message")
     @Expose
     private String message;
 
-    public String getStatus() {
-        return status;
+    public String getValue() {
+        return value;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public String getMessage() {
@@ -27,4 +26,5 @@ public class ResponseValue {
     public void setMessage(String message) {
         this.message = message;
     }
+
 }

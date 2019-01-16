@@ -11,11 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
@@ -23,7 +24,7 @@
                 android:id="@+id/tvIDpesan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1. Roti Ayam"
+                android:text="#65757567"
                 android:textColor="@color/colorPrimaryDark"
                 />
 
@@ -50,6 +51,8 @@
             android:text="M. Rifqi Aufa Abdika"
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
+            android:gravity="center|left"
+            android:drawableLeft="@drawable/ic_konsumen"
             android:textSize="15dp"/>
 
 
@@ -58,14 +61,22 @@
             android:id="@+id/tvDaftarPesan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="1. Roti Ayam"
+            android:text="Resto-Pay -  Rp.5000"
+            android:gravity="center|left"
+            android:maxLines="2"
+            android:textColor="@color/Tex"
+            android:drawableLeft="@drawable/ic_list_order"
             />
 
         <TextView
             android:id="@+id/tvAlamat"
             android:text="Jl. Soebrantas"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="center|left"
+            android:maxLines="3"
+            android:textColor="@color/Tex"
+            android:drawableLeft="@drawable/ic_address"/>
 
 
 

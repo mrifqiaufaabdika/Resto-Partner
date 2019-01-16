@@ -3,9 +3,17 @@
     package="com.example.abdialam.restopatner">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -16,10 +24,9 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.resto.MainActivity"
-            android:label="@string/app_name">
-
-        </activity>
-        <activity android:name=".activities.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SplashActivity"
             android:noHistory="true"
             android:theme="@style/AppTheme.NoAll">
             <intent-filter>
@@ -27,38 +34,50 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".activities.WelcomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.SignInActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.resto.SignUpActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.VerifyActifity" />
+        <activity
+            android:name=".activities.WelcomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SignInActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.resto.SignUpActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.VerifyActifity"
+            android:theme="@style/AppTheme.NoAll" />
         <activity android:name=".activities.resto.DetailOrderActivity" />
         <activity android:name=".activities.resto.AddMenuActivity" />
         <activity android:name=".activities.resto.DataKurirActivity" />
         <activity android:name=".activities.kurir.MainKurirActivity" />
         <activity android:name=".activities.DeliveryActivity" />
-
+        <activity android:name=".activities.TopUpActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
-        <service
-            android:name=".utils.MyFirebaseInstanceIDService">
+        <service android:name=".utils.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service android:name=".utils.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".activities.resto.MapsActivity"
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".activities.resto.EditMenuActivity" />
+        <activity android:name=".activities.resto.EditDeliveryActivity" />
+        <activity android:name=".activities.resto.EditPemilikActivity" />
+        <activity android:name=".activities.resto.EditRestoranActivity" />
+        <activity android:name=".activities.resto.DetailRiwayatActivity" />
+        <activity android:name=".activities.TesFirebaseActivity"></activity>
     </application>
 
 </manifest>

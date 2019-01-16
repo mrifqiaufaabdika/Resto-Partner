@@ -4,11 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
+
+    <item
+        android:id="@+id/telpon"
+        android:title=""
+        android:icon="@drawable/ic_call_white"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/topup"
         android:title=""
         android:icon="@drawable/ic_wallet"
         app:showAsAction="always" />
+
 
 
 </menu>

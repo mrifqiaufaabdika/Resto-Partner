@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Restoran implements Serializable {
-    @SerializedName("id_restoran")
+    @SerializedName("id")
     @Expose
-    private Integer idRestoran;
+    private Integer id;
     @SerializedName("restoran_nama")
     @Expose
     private String restoranNama;
@@ -21,64 +21,64 @@ public class Restoran implements Serializable {
     @SerializedName("restoran_alamat")
     @Expose
     private String restoranAlamat;
-    @SerializedName("restoran_lokasi")
+    @SerializedName("restoran_latitude")
     @Expose
-    private String restoranLokasi;
+    private String restoranLatitude;
+    @SerializedName("restoran_longitude")
+    @Expose
+    private String restoranLongitude;
     @SerializedName("restoran_deskripsi")
     @Expose
     private String restoranDeskripsi;
-    @SerializedName("restoran_gambar")
+    @SerializedName("restoran_oprasional")
     @Expose
-    private String restoranGambar;
-    @SerializedName("restoran_operasional")
+    private Integer restoranOprasional;
+    @SerializedName("restoran_foto")
     @Expose
-    private Integer restoranOperasional;
+    private String restoranFoto;
     @SerializedName("restoran_pemilik_nama")
     @Expose
     private String restoranPemilikNama;
-    @SerializedName("restoran_pemilik_phone")
-    @Expose
-    private String restoranPemilikPhone;
     @SerializedName("restoran_pemilik_email")
     @Expose
     private String restoranPemilikEmail;
+    @SerializedName("restoran_pemilik_phone")
+    @Expose
+    private String restoranPemilikPhone;
     @SerializedName("restoran_balance")
     @Expose
     private String restoranBalance;
     @SerializedName("restoran_delivery")
     @Expose
     private String restoranDelivery;
-    @SerializedName("tarif_delivery")
+    @SerializedName("restoran_delivery_tarif")
     @Expose
-    private String tarifDelivery;
+    private String restoranDeliveryTarif;
     @SerializedName("restoran_delivery_jarak")
     @Expose
     private Integer restoranDeliveryJarak;
     @SerializedName("restoran_delivery_minimum")
     @Expose
     private String restoranDeliveryMinimum;
-    @SerializedName("restoran_create")
+    @SerializedName("restoran_status")
     @Expose
-    private String restoranCreate;
-    @SerializedName("id_pengguna")
-    @Expose
-    private Integer idPengguna;
-    @SerializedName("phone")
-    @Expose
-    private String phone;
+    private String restoranStatus;
     @SerializedName("token")
     @Expose
     private String token;
-    @SerializedName("tipe")
+    @SerializedName("created_at")
     @Expose
-    private String tipe;
+    private String createdAt;
+    @SerializedName("jumlah_kurir")
+    @Expose
+    private Integer jumlahKurir;
 
-    public Integer getIdRestoran() {
-        return idRestoran;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdRestoran(Integer idRestoran) {
-        this.idRestoran = idRestoran;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getRestoranNama() {
@@ -113,12 +113,20 @@ public class Restoran implements Serializable {
         this.restoranAlamat = restoranAlamat;
     }
 
-    public String getRestoranLokasi() {
-        return restoranLokasi;
+    public String getRestoranLatitude() {
+        return restoranLatitude;
     }
 
-    public void setRestoranLokasi(String restoranLokasi) {
-        this.restoranLokasi = restoranLokasi;
+    public void setRestoranLatitude(String restoranLatitude) {
+        this.restoranLatitude = restoranLatitude;
+    }
+
+    public String getRestoranLongitude() {
+        return restoranLongitude;
+    }
+
+    public void setRestoranLongitude(String restoranLongitude) {
+        this.restoranLongitude = restoranLongitude;
     }
 
     public String getRestoranDeskripsi() {
@@ -129,20 +137,20 @@ public class Restoran implements Serializable {
         this.restoranDeskripsi = restoranDeskripsi;
     }
 
-    public String getRestoranGambar() {
-        return restoranGambar;
+    public Integer getRestoranOprasional() {
+        return restoranOprasional;
     }
 
-    public void setRestoranGambar(String restoranGambar) {
-        this.restoranGambar = restoranGambar;
+    public void setRestoranOprasional(Integer restoranOprasional) {
+        this.restoranOprasional = restoranOprasional;
     }
 
-    public Integer getRestoranOperasional() {
-        return restoranOperasional;
+    public String getRestoranFoto() {
+        return restoranFoto;
     }
 
-    public void setRestoranOperasional(Integer restoranOperasional) {
-        this.restoranOperasional = restoranOperasional;
+    public void setRestoranFoto(String restoranFoto) {
+        this.restoranFoto = restoranFoto;
     }
 
     public String getRestoranPemilikNama() {
@@ -153,20 +161,20 @@ public class Restoran implements Serializable {
         this.restoranPemilikNama = restoranPemilikNama;
     }
 
-    public String getRestoranPemilikPhone() {
-        return restoranPemilikPhone;
-    }
-
-    public void setRestoranPemilikPhone(String restoranPemilikPhone) {
-        this.restoranPemilikPhone = restoranPemilikPhone;
-    }
-
     public String getRestoranPemilikEmail() {
         return restoranPemilikEmail;
     }
 
     public void setRestoranPemilikEmail(String restoranPemilikEmail) {
         this.restoranPemilikEmail = restoranPemilikEmail;
+    }
+
+    public String getRestoranPemilikPhone() {
+        return restoranPemilikPhone;
+    }
+
+    public void setRestoranPemilikPhone(String restoranPemilikPhone) {
+        this.restoranPemilikPhone = restoranPemilikPhone;
     }
 
     public String getRestoranBalance() {
@@ -185,12 +193,12 @@ public class Restoran implements Serializable {
         this.restoranDelivery = restoranDelivery;
     }
 
-    public String getTarifDelivery() {
-        return tarifDelivery;
+    public String getRestoranDeliveryTarif() {
+        return restoranDeliveryTarif;
     }
 
-    public void setTarifDelivery(String tarifDelivery) {
-        this.tarifDelivery = tarifDelivery;
+    public void setRestoranDeliveryTarif(String restoranDeliveryTarif) {
+        this.restoranDeliveryTarif = restoranDeliveryTarif;
     }
 
     public Integer getRestoranDeliveryJarak() {
@@ -209,28 +217,12 @@ public class Restoran implements Serializable {
         this.restoranDeliveryMinimum = restoranDeliveryMinimum;
     }
 
-    public String getRestoranCreate() {
-        return restoranCreate;
+    public String getRestoranStatus() {
+        return restoranStatus;
     }
 
-    public void setRestoranCreate(String restoranCreate) {
-        this.restoranCreate = restoranCreate;
-    }
-
-    public Integer getIdPengguna() {
-        return idPengguna;
-    }
-
-    public void setIdPengguna(Integer idPengguna) {
-        this.idPengguna = idPengguna;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setRestoranStatus(String restoranStatus) {
+        this.restoranStatus = restoranStatus;
     }
 
     public String getToken() {
@@ -241,13 +233,20 @@ public class Restoran implements Serializable {
         this.token = token;
     }
 
-    public String getTipe() {
-        return tipe;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setTipe(String tipe) {
-        this.tipe = tipe;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
+    public Integer getJumlahKurir() {
+        return jumlahKurir;
+    }
 
+    public void setJumlahKurir(Integer jumlahKurir) {
+        this.jumlahKurir = jumlahKurir;
+    }
 }
+

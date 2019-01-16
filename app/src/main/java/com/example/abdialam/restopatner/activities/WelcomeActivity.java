@@ -36,8 +36,6 @@ public class WelcomeActivity extends AppCompatActivity {
     @OnClick (R.id.btnSignIn) void signin (){
         Intent intent = new Intent(mContext,SignInActivity.class);
         startActivity(intent);
-        finish();
-
     }
 
     @OnClick (R.id.btnSignup) void signup (){
@@ -54,8 +52,6 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(mContext,SignUpActivity.class);
                 startActivity(intent);
-
-                finish();
             }
         });
 

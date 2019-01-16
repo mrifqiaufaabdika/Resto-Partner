@@ -103,7 +103,7 @@ public class StepFragmentMaps extends Fragment implements BlockingStep {
     public Restoran resto (){
         resto = new Restoran();
         String locRestoran = String.valueOf(position.latitude)+","+String.valueOf(position.longitude);
-        resto.setRestoranLokasi(locRestoran) ;
+        //resto.setRestoranLokasi(locRestoran) ;
         return resto;
     }
 

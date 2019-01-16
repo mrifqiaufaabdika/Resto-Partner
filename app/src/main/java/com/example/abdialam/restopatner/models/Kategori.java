@@ -6,25 +6,22 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Kategori implements Serializable{
-    @SerializedName("id_kategori")
+    @SerializedName("id")
     @Expose
-    private Integer idKategori;
+    private Integer id;
     @SerializedName("kategori_nama")
     @Expose
     private String kategoriNama;
     @SerializedName("kategori_deskripsi")
     @Expose
     private String kategoriDeskripsi;
-    @SerializedName ("is_selected")
-    @Expose
-    private boolean isSelected;
 
-    public Integer getIdKategori() {
-        return idKategori;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdKategori(Integer idKategori) {
-        this.idKategori = idKategori;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getKategoriNama() {
@@ -41,13 +38,5 @@ public class Kategori implements Serializable{
 
     public void setKategoriDeskripsi(String kategoriDeskripsi) {
         this.kategoriDeskripsi = kategoriDeskripsi;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
     }
 }

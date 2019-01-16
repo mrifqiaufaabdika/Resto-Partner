@@ -9,20 +9,21 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.abdialam.restopatner.R;
-import com.example.abdialam.restopatner.models.Detailorder;
-import com.example.abdialam.restopatner.models.Pesan;
+import com.example.abdialam.restopatner.models.Menu;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class DetailOrderAdapter extends BaseAdapter{
 
     Context mContext;
-    List<Detailorder> detailOrders ;
+    List<Menu> detailOrders ;
     ViewHolder viewHolder;
 
 
 
-    public DetailOrderAdapter (Context context, List<Detailorder> data){
+    public DetailOrderAdapter (Context context, List<Menu> data){
         super();
         this.mContext = context;
         this.detailOrders = data;
@@ -40,7 +41,8 @@ public class DetailOrderAdapter extends BaseAdapter{
             viewHolder.mNamaMenu = (TextView)view.findViewById(R.id.tvNamaMenu);
             viewHolder.mQty = (TextView)view.findViewById(R.id.tvQty);
             viewHolder.catatan =(TextView) view.findViewById(R.id.tvCatatan);
-//            viewHolder.harga = (TextView)view.findViewById(R.id.harga);
+            viewHolder.mHarga = (TextView)view.findViewById(R.id.tvHarga);
+            viewHolder.mJml = (TextView) view.findViewById(R.id.tvjumlah);
 
             view.setTag(viewHolder);
 
@@ -49,15 +51,29 @@ public class DetailOrderAdapter extends BaseAdapter{
         }
 
 
-        final Detailorder order = (Detailorder) getItem(position);
+        final Menu order = (Menu) getItem(position);
         viewHolder.mNamaMenu.setText(order.getMenuNama());
-        viewHolder.mQty.setText(String.valueOf(order.getQty()));
+        viewHolder.mQty.setText(String.valueOf(order.getPivot().getQty()));
 //        viewHolder.qty.setText(String .valueOf(cart.getQty()));
-        if(order.getCatatan().isEmpty()){
+        Double jml = null;
+        if(order.getPivot().getDiscount() == 0|| order.getPivot().getDiscount().toString().isEmpty()){
+            viewHolder.mHarga.setText("@"+kursIndonesia(Double.parseDouble(order.getPivot().getHarga())));
+            jml = order.getPivot().getQty() * Double.parseDouble(order.getPivot().getHarga());
+        }else {
+            Double harga_discount = HitungDiscount(Double.parseDouble(order.getPivot().getHarga()),order.getPivot().getDiscount());
+            viewHolder.mHarga.setText("@"+kursIndonesia(harga_discount));
+            jml = order.getPivot().getQty() * harga_discount;
+        }
+
+        viewHolder.mJml.setText(kursIndonesia(jml));
+
+
+
+        if(order.getPivot().getCatatan() == null){
             viewHolder.catatan.setVisibility(View.GONE);
         }else {
             viewHolder.catatan.setVisibility(View.VISIBLE);
-            viewHolder.catatan.setText(order.getCatatan());
+            viewHolder.catatan.setText(order.getPivot().getCatatan());
         }
 
         return view;
@@ -82,8 +98,22 @@ public class DetailOrderAdapter extends BaseAdapter{
     private class ViewHolder{
         TextView mNamaMenu;
         TextView mQty;
+        TextView mHarga;
         TextView mJml;
         TextView catatan;
 
     }
+
+    public Double HitungDiscount (Double Harga,Integer Discount){
+        double harga_potongan = ((Discount/100.00)*Harga);
+        return Harga-harga_potongan;
+    }
+
+    public String kursIndonesia(double nominal){
+        Locale localeID = new Locale("in","ID");
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+        String idnNominal = formatRupiah.format(nominal);
+        return idnNominal;
+    }
+
 }

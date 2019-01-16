@@ -1,5 +1,6 @@
 package com.example.abdialam.restopatner.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +11,8 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.abdialam.restopatner.R;
 import com.example.abdialam.restopatner.adapter.KategoriTabAdapter;
@@ -28,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MenuFragment extends Fragment{
+public class MenuFragment extends Fragment {
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -38,6 +41,14 @@ public class MenuFragment extends Fragment{
     Context mContext;
     HashMap<String,String> user;
     SessionManager sessionManager;
+
+    View message;
+    ImageView icon_message;
+    TextView title_message,sub_title_message;
+
+    ProgressDialog progressDialog;
+
+
 
     @Nullable
     @Override
@@ -50,14 +61,24 @@ public class MenuFragment extends Fragment{
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewPager.setOffscreenPageLimit(5);
+
+        message = view.findViewById(R.id.error);
+        icon_message = (ImageView) view.findViewById(R.id.img_msg);
+        title_message =  (TextView) view.findViewById(R.id.title_msg);
+        sub_title_message =  (TextView) view.findViewById(R.id.sub_title_msg);
+
+
+
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         setValue(user.get(SessionManager.ID_RESTORAN.toString()));
-        initViews();
+
+
 
 
         return view;
     }
+
 
     private void initViews() {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -87,29 +108,43 @@ public class MenuFragment extends Fragment{
         }
 
         KategoriTabAdapter kategoriTabAdapter = new KategoriTabAdapter(getFragmentManager(),tabLayout.getTabCount(),menuList,kategoriList);
+
+
+
         viewPager.setAdapter(kategoriTabAdapter);
-        viewPager.setCurrentItem(0);
+        //viewPager.setCurrentItem(0);
 
     }
 
     private void setValue(String id_restoran){
-        mApiService.getMenuKategori(id_restoran).enqueue(new Callback<ResponseMenuKategori>() {
+        progressDialog = ProgressDialog.show(mContext,null,getString(R.string.memuat),true,false);
+        mApiService.getMenu(id_restoran).enqueue(new Callback<ResponseMenuKategori>() {
             @Override
             public void onResponse(Call<ResponseMenuKategori> call, Response<ResponseMenuKategori> response) {
                 if(response.isSuccessful()){
-                    if(response.body().getStatus().equals("success")){
-                        menuList = response.body().getMenu();
-                        kategoriList = response.body().getKategori();
+                    if(response.body().getValue().equals("1")){
+                        menuList = response.body().getRestoranMenu();
+                        kategoriList = response.body().getRestoranKategori();
+                        progressDialog.dismiss();
                         initViews();
+
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseMenuKategori> call, Throwable t) {
-
+                progressDialog.dismiss();
+                message.setVisibility(View.VISIBLE);
+                icon_message.setImageResource(R.drawable.msg_no_connection);
+                title_message.setText("Opps..Gagal Terhubung Keserver");
+                sub_title_message.setText("Priksa kembali koneksi internet  \n perangkat anda \n");
+                tabLayout.setVisibility(View.GONE);
+                viewPager.setVisibility(View.GONE);
             }
         });
 
     }
+
+
 }

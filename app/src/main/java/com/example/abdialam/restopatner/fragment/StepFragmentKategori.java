@@ -97,16 +97,16 @@ public class StepFragmentKategori extends Fragment implements Step {
     private void cb (){
         for (int i = 0; i <kategoriList.size(); i++) {
 
-            checkBox = new CheckBox(getActivity());
-            checkBox.setId(kategoriList.get(i).getIdKategori());
-            checkBox.setText(kategoriList.get(i).getKategoriNama().toString());
-            for (int j = 0; j < id_kategori().size() ; j++) {
-                if(kategoriList.get(i).getIdKategori() == id_kategori().get(j))
-                checkBox.setChecked(true);
-            }
-            checkBox.setTextSize(15);
-            checkBox.setOnCheckedChangeListener(getOnClickDoSomting(checkBox));
-            linearMain.addView(checkBox);
+//            checkBox = new CheckBox(getActivity());
+//            checkBox.setId(kategoriList.get(i).getIdKategori());
+//            checkBox.setText(kategoriList.get(i).getKategoriNama().toString());
+//            for (int j = 0; j < id_kategori().size() ; j++) {
+//                if(kategoriList.get(i).getIdKategori() == id_kategori().get(j))
+//                checkBox.setChecked(true);
+//            }
+//            checkBox.setTextSize(15);
+//            checkBox.setOnCheckedChangeListener(getOnClickDoSomting(checkBox));
+//            linearMain.addView(checkBox);
         }
     }
 

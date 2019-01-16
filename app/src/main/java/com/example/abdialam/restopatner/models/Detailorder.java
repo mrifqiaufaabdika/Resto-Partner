@@ -6,61 +6,45 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Detailorder implements Serializable{
-    @SerializedName("id_detail_pesan")
+    @SerializedName("id_order")
     @Expose
-    private Integer idDetailPesan;
-    @SerializedName("pesan_id")
+    private Integer idOrder;
+    @SerializedName("id_menu")
     @Expose
-    private Integer pesanId;
-    @SerializedName("menu_id")
-    @Expose
-    private Integer menuId;
-    @SerializedName("harga")
-    @Expose
-    private String harga;
+    private Integer idMenu;
     @SerializedName("qty")
     @Expose
     private Integer qty;
+    @SerializedName("harga")
+    @Expose
+    private String harga;
+    @SerializedName("discount")
+    @Expose
+    private Integer discount;
     @SerializedName("catatan")
     @Expose
     private String catatan;
-    @SerializedName("menu_nama")
+    @SerializedName("created_at")
     @Expose
-    private String menuNama;
-    @SerializedName("jumlah")
+    private String createdAt;
+    @SerializedName("updated_at")
     @Expose
-    private String jumlah;
+    private String updatedAt;
 
-    public Integer getIdDetailPesan() {
-        return idDetailPesan;
+    public Integer getIdOrder() {
+        return idOrder;
     }
 
-    public void setIdDetailPesan(Integer idDetailPesan) {
-        this.idDetailPesan = idDetailPesan;
+    public void setIdOrder(Integer idOrder) {
+        this.idOrder = idOrder;
     }
 
-    public Integer getPesanId() {
-        return pesanId;
+    public Integer getIdMenu() {
+        return idMenu;
     }
 
-    public void setPesanId(Integer pesanId) {
-        this.pesanId = pesanId;
-    }
-
-    public Integer getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(Integer menuId) {
-        this.menuId = menuId;
-    }
-
-    public String getHarga() {
-        return harga;
-    }
-
-    public void setHarga(String harga) {
-        this.harga = harga;
+    public void setIdMenu(Integer idMenu) {
+        this.idMenu = idMenu;
     }
 
     public Integer getQty() {
@@ -71,7 +55,23 @@ public class Detailorder implements Serializable{
         this.qty = qty;
     }
 
-    public String getCatatan() {
+    public String getHarga() {
+        return harga;
+    }
+
+    public void setHarga(String harga) {
+        this.harga = harga;
+    }
+
+    public Integer getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
+    }
+
+    public String  getCatatan() {
         return catatan;
     }
 
@@ -79,19 +79,19 @@ public class Detailorder implements Serializable{
         this.catatan = catatan;
     }
 
-    public String getMenuNama() {
-        return menuNama;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setMenuNama(String menuNama) {
-        this.menuNama = menuNama;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getJumlah() {
-        return jumlah;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setJumlah(String jumlah) {
-        this.jumlah = jumlah;
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

@@ -6,9 +6,13 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class Kurir implements Serializable {
-    @SerializedName("id_kurir")
+
+    @SerializedName("id")
     @Expose
-    private Integer idKurir;
+    private Integer id;
+    @SerializedName("id_restoran")
+    @Expose
+    private Integer idRestoran;
     @SerializedName("kurir_nama")
     @Expose
     private String kurirNama;
@@ -18,28 +22,30 @@ public class Kurir implements Serializable {
     @SerializedName("kurir_email")
     @Expose
     private String kurirEmail;
-    @SerializedName("kurir_restoran_id")
+    @SerializedName("kurir_delete")
     @Expose
-    private Integer kurirRestoranId;
-    @SerializedName("id_pengguna")
-    @Expose
-    private Integer idPengguna;
-    @SerializedName("phone")
-    @Expose
-    private String phone;
+    private Integer kurirDelete;
     @SerializedName("token")
     @Expose
     private String token;
-    @SerializedName("tipe")
+    @SerializedName("created_at")
     @Expose
-    private String tipe;
+    private Object createdAt;
 
-    public Integer getIdKurir() {
-        return idKurir;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdKurir(Integer idKurir) {
-        this.idKurir = idKurir;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getIdRestoran() {
+        return idRestoran;
+    }
+
+    public void setIdRestoran(Integer idRestoran) {
+        this.idRestoran = idRestoran;
     }
 
     public String getKurirNama() {
@@ -66,28 +72,12 @@ public class Kurir implements Serializable {
         this.kurirEmail = kurirEmail;
     }
 
-    public Integer getKurirRestoranId() {
-        return kurirRestoranId;
+    public Integer getKurirDelete() {
+        return kurirDelete;
     }
 
-    public void setKurirRestoranId(Integer kurirRestoranId) {
-        this.kurirRestoranId = kurirRestoranId;
-    }
-
-    public Integer getIdPengguna() {
-        return idPengguna;
-    }
-
-    public void setIdPengguna(Integer idPengguna) {
-        this.idPengguna = idPengguna;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setKurirDelete(Integer kurirDelete) {
+        this.kurirDelete = kurirDelete;
     }
 
     public String getToken() {
@@ -98,11 +88,12 @@ public class Kurir implements Serializable {
         this.token = token;
     }
 
-    public String getTipe() {
-        return tipe;
+    public Object getCreatedAt() {
+        return createdAt;
     }
 
-    public void setTipe(String tipe) {
-        this.tipe = tipe;
+    public void setCreatedAt(Object createdAt) {
+        this.createdAt = createdAt;
     }
+
 }

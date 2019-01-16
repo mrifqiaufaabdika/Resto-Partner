@@ -13,9 +13,10 @@ import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
 import com.example.abdialam.restopatner.activities.resto.DetailOrderActivity;
-import com.example.abdialam.restopatner.models.Detailorder;
-import com.example.abdialam.restopatner.models.Pesan;
+import com.example.abdialam.restopatner.models.Menu;
+import com.example.abdialam.restopatner.models.Order;
 import com.example.abdialam.restopatner.utils.DateHelper;
+import com.example.abdialam.restopatner.utils.SessionManager;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -28,11 +29,14 @@ import butterknife.ButterKnife;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
-    private List<Pesan> orderList;
+    private List<Order> orderList;
     private Context mContext;
-    private List<Detailorder> detailorderList;
+   // private List<Detailorder> detailorderList;
+    private List<Menu> menuOrderList;
+    SessionManager sessionManager;
 
-    public OrderAdapter(Context context,List<Pesan> orders){
+
+    public OrderAdapter(Context context,List<Order> orders){
         this.mContext = context;
         this.orderList = orders;
     }
@@ -43,37 +47,39 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_order_list,parent,false);
         OrderViewHolder holder = new OrderViewHolder(view);
+        sessionManager = new SessionManager(mContext);
         return  holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, final int position) {
-        final Pesan order = orderList.get(position);
-        detailorderList = orderList.get(position).getDetailorder();
+        final Order order = orderList.get(position);
+        menuOrderList = order.getDetailOrder();
+        //detailorderList = orderList.get(position).getDetailorder();
         String pesan ="";
         String tanda = ", ";
-        for (int i = 0; i < detailorderList.size() ; i++) {
-            if(i == detailorderList.size()-1){
+        for (int i = 0; i < menuOrderList.size() ; i++) {
+            if(i == menuOrderList.size()-1){
                 tanda =".";
             }
-            pesan += detailorderList.get(i).getMenuNama()+" "+detailorderList.get(i).getQty()+tanda;
+            pesan += "("+menuOrderList.get(i).getPivot().getQty()+") "+menuOrderList.get(i).getMenuNama()+""+tanda;
         }
 
-        holder.mNamaPemesan.setText(order.getKonsumenNama());
-        holder.mAlamat.setText(order.getPesanAlamat());
+        holder.mNamaPemesan.setText(order.getOrderKonsumen() +"\n"+"+"+order.getOrderKonsumenPhone());
+        holder.mAlamat.setText(satuan_jarak(order.getOrderJarakAntar().toString())+"\n"+order.getOrderAlamat());
         holder.mDaftarPesan.setText(pesan);
-        String strTimeOrder = order.getPesanWaktu();
+        String strTimeOrder = order.getCreatedAt();
         long longDate = timeStringToMilis(strTimeOrder);
         holder.mTime.setText(DateHelper.getGridDate(mContext,longDate));
-        holder.mIdPesan.setText("#"+order.getIdPesan().toString());
+        holder.mIdPesan.setText("#"+order.getId().toString());
 
         holder.mParentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext,"Anda memilih "+order.getKonsumenNama(),Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(mContext, DetailOrderActivity.class);
-                intent.putExtra("pesan", (Serializable) orderList);
-                intent.putExtra("position",position);
+                Toast.makeText(mContext,"Anda memilih "+order.getOrderKonsumen(),Toast.LENGTH_SHORT).show();
+                Intent intent;
+                intent= new Intent(mContext, DetailOrderActivity.class);
+                intent.putExtra("pesan", (Serializable) order);
                 mContext.startActivity(intent);
             }
         });
@@ -108,7 +114,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 //convert time string to milis date
     public long timeStringToMilis (String strDate ){
 
-        SimpleDateFormat tgl = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat tgl = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         long milliseconds = 0;
         Date date = null;
         try {
@@ -118,6 +124,38 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             e.printStackTrace();
         }
         return milliseconds;
+
+    }
+
+    private String satuan_jarak(String jarak){
+        String jarakStr = null;
+        if(Double.parseDouble(jarak) < 1) {
+            jarakStr = jarak + "m";
+        }else{
+            jarakStr = jarak + "Km";
+        }
+        return jarakStr;
+    }
+
+    // Clean all elements of the recycler
+
+    public void clear() {
+
+        orderList.clear();
+
+        notifyDataSetChanged();
+
+    }
+
+
+
+// Add a list of items -- change to type used
+
+    public void addAll(List<Order> list) {
+
+        orderList.addAll(list);
+
+        notifyDataSetChanged();
 
     }
 }

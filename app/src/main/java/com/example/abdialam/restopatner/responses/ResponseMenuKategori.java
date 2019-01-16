@@ -8,38 +8,51 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ResponseMenuKategori {
-    @SerializedName("status")
+    @SerializedName("value")
     @Expose
-    private String status;
-    @SerializedName("kategori")
+    private String value;
+    @SerializedName("message")
     @Expose
-    private List<Kategori> kategori = null;
-    @SerializedName("menu")
+    private String message;
+    @SerializedName("restoran_menu")
     @Expose
-    private List<Menu> menu = null;
+    private List<Menu> restoranMenu = null;
+    @SerializedName("restoran_kategori")
+    @Expose
+    private List<Kategori> restoranKategori = null;
 
-    public String getStatus() {
-        return status;
+
+    public String getValue() {
+        return value;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public List<Kategori> getKategori() {
-        return kategori;
+    public String getMessage() {
+        return message;
     }
 
-    public void setKategori(List<Kategori> kategori) {
-        this.kategori = kategori;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public List<Menu> getMenu() {
-        return menu;
+    public List<Menu> getRestoranMenu() {
+        return restoranMenu;
     }
 
-    public void setMenu(List<Menu> menu) {
-        this.menu = menu;
+    public void setRestoranMenu(List<Menu> restoranMenu) {
+        this.restoranMenu = restoranMenu;
     }
+
+    public List<Kategori> getRestoranKategori() {
+        return restoranKategori;
+    }
+
+    public void setRestoranKategori(List<Kategori> restoranKategori) {
+        this.restoranKategori = restoranKategori;
+    }
+
 
 }

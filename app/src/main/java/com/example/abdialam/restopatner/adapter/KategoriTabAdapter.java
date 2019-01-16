@@ -1,6 +1,7 @@
 package com.example.abdialam.restopatner.adapter;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -24,7 +25,16 @@ public class KategoriTabAdapter extends FragmentStatePagerAdapter {
         this.mNumOfTabs = NumOfTabs;
         this.menuList = menuList;
         this.kategoriList = kategoriList;
+
+
     }
+
+    public void update(List<Menu> menuList,List <Kategori> kategoriList) {
+        this.menuList = menuList;
+        this.kategoriList = kategoriList;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public Fragment getItem(int position) {
@@ -40,5 +50,18 @@ public class KategoriTabAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return mNumOfTabs;
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        if (object instanceof UpdateableFragment) {
+            ((UpdateableFragment) object).update(menuList,kategoriList);
+        }
+        //don't return POSITION_NONE, avoid fragment recreation.
+        return super.getItemPosition(object);
+    }
+
+    public interface UpdateableFragment {
+        public void update(List<Menu> menuList,List <Kategori> kategoriList);
     }
 }

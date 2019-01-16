@@ -87,7 +87,7 @@ public class StepFragmentDelivery extends Fragment implements BlockingStep {
         resto.setRestoranDeliveryJarak(Integer.valueOf(mJarakMax.getText().toString()));
         resto.setRestoranDeliveryMinimum(mMinPesanan.getText().toString());
         resto.setRestoranDelivery(delivery);
-        resto.setTarifDelivery(biayaantar);
+       // resto.setTarifDelivery(biayaantar);
         return resto;
     }
 

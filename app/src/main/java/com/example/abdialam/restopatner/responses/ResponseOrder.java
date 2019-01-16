@@ -1,24 +1,29 @@
 package com.example.abdialam.restopatner.responses;
 
-import com.example.abdialam.restopatner.models.Pesan;
+import com.example.abdialam.restopatner.models.Order;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ResponseGetOrder {
+public class ResponseOrder {
+    @SerializedName("data")
+    @Expose
+    private List<Order> data = null;
     @SerializedName("value")
     @Expose
     private String value;
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("jumlah_pesan")
-    @Expose
-    private Integer jumlahPesan;
-    @SerializedName("pesan")
-    @Expose
-    private List<Pesan> pesan = null;
+
+    public List<Order> getData() {
+        return data;
+    }
+
+    public void setData(List<Order> data) {
+        this.data = data;
+    }
 
     public String getValue() {
         return value;
@@ -36,19 +41,4 @@ public class ResponseGetOrder {
         this.message = message;
     }
 
-    public Integer getJumlahPesan() {
-        return jumlahPesan;
-    }
-
-    public void setJumlahPesan(Integer jumlahPesan) {
-        this.jumlahPesan = jumlahPesan;
-    }
-
-    public List<Pesan> getPesan() {
-        return pesan;
-    }
-
-    public void setPesan(List<Pesan> pesan) {
-        this.pesan = pesan;
-    }
 }

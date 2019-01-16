@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentTop="true">
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="Akun"
+            app:titleTextColor="#FFFFFF"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scroll1"
-        >
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
 
@@ -50,7 +70,7 @@
                             android:textSize="18sp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Pak Nurddin"
+                            android:text=""
                             android:textColor="@color/colorPrimary"
                             android:background="#0000"
 
@@ -64,7 +84,7 @@
                             android:textSize="@dimen/textsub"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="+6281268475430"
+                            android:text=""
                             android:textColor="@color/Tex"
                             android:background="#0000"
                             android:gravity="left"
@@ -76,7 +96,7 @@
                             android:textSize="@dimen/textsub"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="pak.nurddin.resto@gmail.com"
+                            android:text=""
                             android:layout_marginTop="5dp"
                             android:textColor="@color/Tex"
                             android:background="#0000"
@@ -90,7 +110,7 @@
                             android:textSize="@dimen/textsub"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Jl. Soebrantas No 90"
+                            android:text=""
                             android:layout_marginTop="5dp"
                             android:textColor="@color/Tex"
                             android:background="#0000"
@@ -152,7 +172,7 @@
                         android:textSize="30sp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Rp. 1.000.000"
+                        android:text=""
                         android:textColor="@color/Tex"
                         android:background="#0000"
 
@@ -169,20 +189,6 @@
                 <!--****** total********-->
 
             </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             <LinearLayout
 
@@ -262,7 +268,7 @@
                 android:layout_height="1dp"
                 android:background="@color/colordevider"/>
 
-            <!--****** total********-->
+            <!--****** Data Pemilik********-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -284,6 +290,62 @@
                     android:drawableRight="@drawable/ic_chevron"
                     />
             </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colordevider"/>
+
+                <!--****** total********-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+
+                    <TextView
+                        android:layout_weight="1"
+                        android:id="@+id/btnDataLokasi"
+                        android:textSize="@dimen/text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Ganti Lokasi"
+                        android:textColor="@color/Tex"
+                        android:background="#0000"
+                        android:padding="15dp"
+                        android:gravity="left"
+                        android:drawableRight="@drawable/ic_chevron"
+                        />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colordevider"/>
+
+                <!--****** total********-->
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--&gt;-->
+
+
+                    <!--<TextView-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:id="@+id/btnTesFirebase"-->
+                        <!--android:textSize="@dimen/text"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text=""-->
+                        <!--android:textColor="@color/Tex"-->
+                        <!--android:background="#0000"-->
+                        <!--android:padding="15dp"-->
+                        <!--android:gravity="left"-->
+                        <!--android:drawableRight="@drawable/ic_chevron"-->
+                        <!--/>-->
+                <!--</LinearLayout>-->
 
             </LinearLayout>
 
@@ -307,8 +369,8 @@
                     android:id="@+id/btn_sign_out"
                     android:textSize="@dimen/text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Sign Out"
+                    android:layout_height="60dp"
+                    android:text="Keluar"
                     android:textColor="@color/Tex"
                     android:background="#0000"
                     android:padding="15dp"
@@ -322,8 +384,7 @@
         </LinearLayout>
 
 
-</ScrollView>
-
-</RelativeLayout>
 
 
+</android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

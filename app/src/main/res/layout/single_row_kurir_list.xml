@@ -18,20 +18,26 @@
 
     <TextView
         android:id="@+id/tvNamaKurir"
+        android:gravity="center|left"
+        android:drawableLeft="@drawable/ic_konsumen"
+        android:text="vhgvhv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/Tex"/>
 
     <TextView
         android:id="@+id/tvPhoneKurir"
         android:layout_below="@id/tvNamaKurir"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/Tex"/>
 
     <TextView
         android:id="@+id/tvEmailKurir"
         android:layout_below="@id/tvPhoneKurir"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/Tex"/>
 
     </LinearLayout>
 
@@ -42,11 +48,13 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/btnEdit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_edit"/>
 
             <ImageView
+                android:id="@+id/btnDelete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_delete"/>

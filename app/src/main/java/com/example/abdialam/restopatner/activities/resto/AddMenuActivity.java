@@ -1,5 +1,6 @@
 package com.example.abdialam.restopatner.activities.resto;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,14 +11,21 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
 import com.example.abdialam.restopatner.config.ServerConfig;
+import com.example.abdialam.restopatner.responses.ResponseValue;
 import com.example.abdialam.restopatner.rest.ApiService;
 import com.example.abdialam.restopatner.utils.SessionManager;
 
@@ -43,25 +51,31 @@ public class AddMenuActivity extends AppCompatActivity {
     SessionManager sessionManager;
     HashMap<String,String> user;
     Context mContext;
-    String id_kategori,id_restoran;
+    String id_kategoriStr,id_restoranStr;
     private Uri filePath ;
-    private Bitmap bitmap;
     ApiService mApiService ;
-    MultipartBody.Part body;
-    String mediaPath;
+    String mediaPath = "";
+    private ProgressDialog progressDialog;
+    String ketersediaan = "0";
 
-    @BindView(R.id.btnChooseFile)
-    Button btnPilihPhoto;
-    @BindView(R.id.imageView)
+
+    @BindView(R.id.imageViewMenu)
     ImageView mPhoto;
     @BindView(R.id.etNamaMenu)
     EditText mNamamenu;
     @BindView(R.id.etHargaMenu)
     EditText mHargaMenu;
+    @BindView(R.id.etMenuDiscount)
+    EditText mDiscountMenu;
     @BindView(R.id.etDeskripsi)
     EditText mDeskripsi;
+    @BindView(R.id.swKetersediaan)
+    Switch swKetersediaan;
     @BindView(R.id.btnSubmitMenu)
-    Button mSubmitMenu;
+    TextView mSubmitMenu;
+    @BindView(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
+    private String nama_kategoriStr;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,13 +85,25 @@ public class AddMenuActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mApiService = ServerConfig.getAPIService();
         getIntentComing();
+        getSupportActionBar().setTitle("Tambah "+nama_kategoriStr);
         sessionManager = new SessionManager(mContext);
         user = sessionManager.getRestoDetail();
-        id_restoran = user.get(SessionManager.ID_RESTORAN).toString();
+        id_restoranStr = user.get(SessionManager.ID_RESTORAN);
 
-        Toast.makeText(mContext,"id resto "+id_restoran+" id kat"+id_kategori,Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext,"id resto "+id_restoranStr+" id kat"+id_kategoriStr,Toast.LENGTH_SHORT).show();
 
-
+        swKetersediaan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                Toast.makeText(mContext, "Menu " + (isChecked ? "Tersedia" : "Tidak Tersedia"),
+                        Toast.LENGTH_SHORT).show();
+                if(isChecked) {
+                    ketersediaan = "1";
+                } else {
+                    ketersediaan = "0";
+                }
+            }
+        });
 
     }
 
@@ -87,8 +113,8 @@ public class AddMenuActivity extends AppCompatActivity {
     private void getIntentComing() {
 
         if(getIntent().hasExtra("id_kategori")){
-            id_kategori = getIntent().getStringExtra("id_kategori");
-
+            id_kategoriStr =getIntent().getStringExtra("id_kategori");
+            nama_kategoriStr = getIntent().getStringExtra("nama_kategori");
         }
 
     }
@@ -97,7 +123,7 @@ public class AddMenuActivity extends AppCompatActivity {
 
 
 
-    @OnClick(R.id.btnChooseFile) void showFileChooser() {
+    @OnClick(R.id.imageViewMenu) void showFileChooser() {
 
         Intent intent = new Intent(Intent.ACTION_PICK);
 
@@ -168,45 +194,98 @@ public class AddMenuActivity extends AppCompatActivity {
 
 
     @OnClick(R.id.btnSubmitMenu) void SubmitMenu () {
-        String nama = "a";
-        String harga = "5000";
-        String deskripsi = "c";
 
-        File file = new File(mediaPath);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
-        mApiService.addMenu(fileToUpload, nama, deskripsi, harga, id_restoran, id_kategori).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(mContext, "Berhasil Menambah Menu", Toast.LENGTH_SHORT).show();
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(coordinatorLayout.getWindowToken(), 0);
+
+        //create progres dialog
+        progressDialog = ProgressDialog.show(mContext,null,getString(R.string.memuat),true,false);
+
+        if(mNamamenu.getText().toString().isEmpty()||mNamamenu.getText().toString().equals(null)) {
+            progressDialog.dismiss();
+            mNamamenu.setError("Nama diperlukan");
+            mNamamenu.requestFocus();
+            return;
+        }else if(mHargaMenu.getText().toString().isEmpty()||mHargaMenu.getText().toString().equals(null)){
+            progressDialog.dismiss();
+            mHargaMenu.setError("Nomor telepon diperlukan");
+            mHargaMenu.requestFocus();
+            return;
+        }else if(mDeskripsi.getText().toString().isEmpty()||mDeskripsi.getText().toString().equals(null)){
+            progressDialog.dismiss();
+            mDeskripsi.setError("Email diperlukan");
+            mDeskripsi.requestFocus();
+            return;
+        }else if(mDiscountMenu.getText().toString().equals(null)||mDiscountMenu.getText().toString().isEmpty()){
+            progressDialog.dismiss();
+            mDiscountMenu.setError("Email tidak valid");
+            mDiscountMenu.requestFocus();
+            return;
+        }else if(mediaPath.equals(null)||mediaPath.isEmpty()){
+            progressDialog.dismiss();
+            Toast.makeText(mContext,"anda belum memilih foto",Toast.LENGTH_SHORT).show();
+            return;
+        }else {
+            progressDialog.dismiss();
+
+
+            File file = new File(mediaPath);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("menu_foto", file.getName(), requestBody);
+            RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
+            RequestBody menu_nama = RequestBody.create(MediaType.parse("text/plain"), mNamamenu.getText().toString());
+            RequestBody menu_harga = RequestBody.create(MediaType.parse("text/plain"), mHargaMenu.getText().toString());
+            RequestBody menu_deskripsi = RequestBody.create(MediaType.parse("text/plain"), mDeskripsi.getText().toString());
+            RequestBody menu_discount = RequestBody.create(MediaType.parse("text/plain"), mDiscountMenu.getText().toString());
+            RequestBody id_restoran = RequestBody.create(MediaType.parse("text/plain"), id_restoranStr);
+            RequestBody id_kategori = RequestBody.create(MediaType.parse("text/plain"), id_kategoriStr);
+            RequestBody menu_ketersediaan = RequestBody.create(MediaType.parse("text/plain"),ketersediaan);
+
+
+
+            mApiService.addMenu(fileToUpload, menu_nama, menu_deskripsi, menu_harga, id_restoran, id_kategori, menu_discount, menu_ketersediaan).enqueue(new Callback<ResponseValue>() {
+                @Override
+                public void onResponse(Call<ResponseValue> call, Response<ResponseValue> response) {
+                    if (response.isSuccessful()) {
+                        String message = response.body().getMessage();
+                        if (response.body().getValue().equals("1")) {
+                            Toast.makeText(mContext,"Berhasil Menambah Menu",Toast.LENGTH_LONG).show();
+                            onBackPressed();
+                        } else {
+                            Snackbar.make(coordinatorLayout,message,Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                @Override
+                public void onFailure(Call<ResponseValue> call, Throwable t) {
+                    Snackbar.make(coordinatorLayout,R.string.loss_connect,Snackbar.LENGTH_SHORT).show();
+                }
+            });
 
-            }
-        });
 
-//        mApiService.setMenu(fileToUpload,filename).enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                if(response.isSuccessful()) {
-//                    Toast.makeText(mContext, response.body().toString(), Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                Toast.makeText(mContext, "gagal berhasil menabah menu", Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
-//
-//    }
 
+
+
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(mContext,MainActivity.class);
+        intent.putExtra("menu","menu");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+
+    private void clear(){
+        mPhoto.setImageResource(R.drawable.ic_add_kurir);
+        mNamamenu.setText(null);
+        mHargaMenu.setText(null);
+        mDeskripsi.setText(null);
+        mDiscountMenu.setText(null);
     }
 }

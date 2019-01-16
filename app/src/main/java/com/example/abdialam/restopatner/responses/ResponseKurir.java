@@ -7,25 +7,22 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ResponseKurir {
-    @SerializedName("status")
+    @SerializedName("value")
     @Expose
-    private String status;
+    private String value;
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("jumlah")
-    @Expose
-    private Integer jumlah;
     @SerializedName("kurir")
     @Expose
     private List<Kurir> kurir = null;
 
-    public String getStatus() {
-        return status;
+    public String getValue() {
+        return value;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setValue(String status) {
+        this.value = value;
     }
 
     public String getMessage() {
@@ -34,14 +31,6 @@ public class ResponseKurir {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public Integer getJumlah() {
-        return jumlah;
-    }
-
-    public void setJumlah(Integer jumlah) {
-        this.jumlah = jumlah;
     }
 
     public List<Kurir> getKurir() {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.abdialam.restopatner.activities.SplashActivity;
+import com.example.abdialam.restopatner.fragment.OrderListFragment;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -22,6 +23,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             try {
                 JSONObject json = new JSONObject(remoteMessage.getData().toString());
                 sendPushNotification(json);
+
             }catch (Exception e){
                 Log.d(TAG, "onMessageReceived: "+e.getMessage());
             }
@@ -53,4 +55,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "sendPushNotification: "+e.getMessage());
         }
     }
+
+
 }

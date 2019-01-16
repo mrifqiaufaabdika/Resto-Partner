@@ -12,10 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
+import com.example.abdialam.restopatner.activities.DeliveryActivity;
 import com.example.abdialam.restopatner.activities.resto.DetailOrderActivity;
-import com.example.abdialam.restopatner.models.Detailorder;
-import com.example.abdialam.restopatner.models.Pesan;
-import com.example.abdialam.restopatner.rest.ApiService;
+import com.example.abdialam.restopatner.models.Menu;
+import com.example.abdialam.restopatner.models.Order;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ import butterknife.ButterKnife;
 public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.MyViewHolder> {
 
     Context mContext;
-    List<Pesan> pesanList = new ArrayList<>();
-    List<Detailorder> detailorderList = new ArrayList<>();
+    List<Order> pesanList = new ArrayList<>();
+    List<Menu> detailorderList = new ArrayList<>();
 
-    public DeliveryAdapter (Context context,List<Pesan> data){
+    public DeliveryAdapter (Context context,List<Order> data){
         this.mContext = context;
         this.pesanList = data;
     }
@@ -48,30 +48,32 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
-        final Pesan order = pesanList.get(position);
-        detailorderList = pesanList.get(position).getDetailorder();
+        final Order order = pesanList.get(position);
+        detailorderList = pesanList.get(position).getDetailOrder();
         String pesan ="";
         String tanda = ", ";
         for (int i = 0; i < detailorderList.size() ; i++) {
             if(i == detailorderList.size()-1){
                 tanda =".";
             }
-            pesan += detailorderList.get(i).getMenuNama()+" "+detailorderList.get(i).getQty()+tanda;
+            pesan += "("+detailorderList.get(i).getPivot().getQty()+") "+detailorderList.get(i).getMenuNama()+tanda;
         }
 
-        holder.mNamaPemesan.setText(order.getKonsumenNama());
-        holder.mAlamat.setText(order.getPesanAlamat());
+        holder.mNamaPemesan.setText(order.getOrderKonsumen());
+        holder.mAlamat.setText(order.getOrderAlamat());
         holder.mDaftarPesan.setText(pesan);
-        holder.mTime.setText("5 m");
-        holder.mIdPesan.setText("#"+order.getIdPesan().toString());
+        holder.mTime.setText(satuan_jarak(order.getOrderJarakAntar().toString()));
+        holder.mIdPesan.setText("#"+order.getId().toString());
 
         holder.mParentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext,"Anda memilih "+order.getKonsumenNama(),Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(mContext, DetailOrderActivity.class);
-                intent.putExtra("pesan", (Serializable) pesanList);
-                intent.putExtra("position",position);
+                Toast.makeText(mContext,"Anda memilih "+order.getOrderKonsumen(),Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext, DeliveryActivity.class);
+                intent.putExtra("pesan",order.getId().toString());
+                intent.putExtra("lat",order.getOrderLat().toString());
+                intent.putExtra("lang",order.getOrderLong().toString());
+                intent.putExtra("alamat",order.getOrderAlamat().toString());
                 mContext.startActivity(intent);
             }
         });
@@ -101,5 +103,15 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.MyView
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+    }
+
+    private String satuan_jarak(String jarak){
+        String jarakStr = null;
+        if(Double.parseDouble(jarak) < 1) {
+            jarakStr = jarak + " m";
+        }else{
+            jarakStr = jarak + " Km";
+        }
+        return jarakStr;
     }
 }

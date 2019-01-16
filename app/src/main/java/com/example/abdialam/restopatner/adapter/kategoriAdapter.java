@@ -65,17 +65,17 @@ public class kategoriAdapter extends BaseAdapter {
         }
 
         viewHolder.kategoriNama.setText(kategoriList.get(position).getKategoriNama().toString());
-        viewHolder.kategoriCheckBox.setChecked(kategoriList.get(position).isSelected());
+        //viewHolder.kategoriCheckBox.setChecked(kategoriList.get(position).isSelected());
 
         viewHolder.kategoriCheckBox.setTag(position);
 
-        viewHolder.kategoriCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                kategoriList.get(position).setSelected(b);
-                Toast.makeText(context, ""+b,Toast.LENGTH_SHORT).show();
-            }
-        });
+//        viewHolder.kategoriCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                kategoriList.get(position).setSelected(b);
+//                Toast.makeText(context, ""+b,Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
        // viewHolder.kategoriCheckBox.setChecked(isC);
        return view;

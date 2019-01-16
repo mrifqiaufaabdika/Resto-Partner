@@ -7,116 +7,60 @@ import java.io.Serializable;
 
 public class Menu implements Serializable {
 
-    @SerializedName("id_menu")
+    @SerializedName("id")
     @Expose
-    private Integer idMenu;
-    @SerializedName("menu_restoran_id")
+    private Integer id;
+    @SerializedName("id_restoran")
     @Expose
-    private Integer menuRestoranId;
-    @SerializedName("menu_kategori_id")
-    @Expose
-    private Integer menuKategoriId;
-    @SerializedName("menu_nama")
-    @Expose
-    private String menuNama;
-    @SerializedName("menu_deskripsi")
-    @Expose
-    private String menuDeskripsi;
-    @SerializedName("menu_harga")
-    @Expose
-    private String menuHarga;
-    @SerializedName("menu_gambar")
-    @Expose
-    private String menuGambar;
-    @SerializedName("menu_ketersedian")
-    @Expose
-    private Integer menuKetersedian;
-    @SerializedName("menu_discont")
-    @Expose
-    private Object menuDiscont;
+    private Integer idRestoran;
     @SerializedName("id_kategori")
     @Expose
     private Integer idKategori;
-    @SerializedName("kategori_nama")
+    @SerializedName("menu_nama")
     @Expose
-    private String kategoriNama;
-    @SerializedName("kategori_deskripsi")
+    private String menuNama;
+    @SerializedName("menu_foto")
     @Expose
-    private String kategoriDeskripsi;
-    @SerializedName("Favorit")
+    private String menuFoto;
+    @SerializedName("menu_harga")
     @Expose
-    private Integer favorit;
+    private String menuHarga;
+    @SerializedName("menu_deskripsi")
+    @Expose
+    private String menuDeskripsi;
+    @SerializedName("menu_ketersediaan")
+    @Expose
+    private Integer menuKetersediaan;
+    @SerializedName("menu_discount")
+    @Expose
+    private Integer menuDiscount;
+    @SerializedName("menu_jumlah_favorit")
+    @Expose
+    private Integer menuJumlahFavorit;
+    @SerializedName("menu_favorit")
+    @Expose
+    private Integer menuFavorit;
+    @SerializedName("pivot")
+    @Expose
+    private Detailorder pivot;
+    @SerializedName("menu_jumlah_dipesan")
+    @Expose
+    private Integer menuJumlahDipesan;
 
-    public Integer getIdMenu() {
-        return idMenu;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdMenu(Integer idMenu) {
-        this.idMenu = idMenu;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Integer getMenuRestoranId() {
-        return menuRestoranId;
+    public Integer getIdRestoran() {
+        return idRestoran;
     }
 
-    public void setMenuRestoranId(Integer menuRestoranId) {
-        this.menuRestoranId = menuRestoranId;
-    }
-
-    public Integer getMenuKategoriId() {
-        return menuKategoriId;
-    }
-
-    public void setMenuKategoriId(Integer menuKategoriId) {
-        this.menuKategoriId = menuKategoriId;
-    }
-
-    public String getMenuNama() {
-        return menuNama;
-    }
-
-    public void setMenuNama(String menuNama) {
-        this.menuNama = menuNama;
-    }
-
-    public String getMenuDeskripsi() {
-        return menuDeskripsi;
-    }
-
-    public void setMenuDeskripsi(String menuDeskripsi) {
-        this.menuDeskripsi = menuDeskripsi;
-    }
-
-    public String getMenuHarga() {
-        return menuHarga;
-    }
-
-    public void setMenuHarga(String menuHarga) {
-        this.menuHarga = menuHarga;
-    }
-
-    public String getMenuGambar() {
-        return menuGambar;
-    }
-
-    public void setMenuGambar(String menuGambar) {
-        this.menuGambar = menuGambar;
-    }
-
-    public Integer getMenuKetersedian() {
-        return menuKetersedian;
-    }
-
-    public void setMenuKetersedian(Integer menuKetersedian) {
-        this.menuKetersedian = menuKetersedian;
-    }
-
-    public Object getMenuDiscont() {
-        return menuDiscont;
-    }
-
-    public void setMenuDiscont(Object menuDiscont) {
-        this.menuDiscont = menuDiscont;
+    public void setIdRestoran(Integer idRestoran) {
+        this.idRestoran = idRestoran;
     }
 
     public Integer getIdKategori() {
@@ -127,27 +71,83 @@ public class Menu implements Serializable {
         this.idKategori = idKategori;
     }
 
-    public String getKategoriNama() {
-        return kategoriNama;
+    public String getMenuNama() {
+        return menuNama;
     }
 
-    public void setKategoriNama(String kategoriNama) {
-        this.kategoriNama = kategoriNama;
+    public void setMenuNama(String menuNama) {
+        this.menuNama = menuNama;
     }
 
-    public String getKategoriDeskripsi() {
-        return kategoriDeskripsi;
+    public String getMenuFoto() {
+        return menuFoto;
     }
 
-    public void setKategoriDeskripsi(String kategoriDeskripsi) {
-        this.kategoriDeskripsi = kategoriDeskripsi;
-    }
-    public Integer getFavorit() {
-        return favorit;
+    public void setMenuFoto(String menuFoto) {
+        this.menuFoto = menuFoto;
     }
 
-    public void setFavorit(Integer favorit) {
-        this.favorit = favorit;
+    public String getMenuHarga() {
+        return menuHarga;
     }
 
+    public void setMenuHarga(String menuHarga) {
+        this.menuHarga = menuHarga;
+    }
+
+    public String getMenuDeskripsi() {
+        return menuDeskripsi;
+    }
+
+    public void setMenuDeskripsi(String menuDeskripsi) {
+        this.menuDeskripsi = menuDeskripsi;
+    }
+
+    public Integer getMenuKetersediaan() {
+        return menuKetersediaan;
+    }
+
+    public void setMenuKetersediaan(Integer menuKetersediaan) {
+        this.menuKetersediaan = menuKetersediaan;
+    }
+
+    public Integer getMenuDiscount() {
+        return menuDiscount;
+    }
+
+    public void setMenuDiscount(Integer menuDiscount) {
+        this.menuDiscount = menuDiscount;
+    }
+
+    public Integer getMenuJumlahFavorit() {
+        return menuJumlahFavorit;
+    }
+
+    public void setMenuJumlahFavorit(Integer menuJumlahFavorit) {
+        this.menuJumlahFavorit = menuJumlahFavorit;
+    }
+
+    public Integer getMenuFavorit() {
+        return menuFavorit;
+    }
+
+    public void setMenuFavorit(Integer menuFavorit) {
+        this.menuFavorit = menuFavorit;
+    }
+
+    public Detailorder getPivot() {
+        return pivot;
+    }
+
+    public void setPivot(Detailorder pivot) {
+        this.pivot = pivot;
+    }
+
+    public Integer getMenuJumlahDipesan() {
+        return menuJumlahDipesan;
+    }
+
+    public void setMenuJumlahDipesan(Integer menuJumlahDipesan) {
+        this.menuJumlahDipesan = menuJumlahDipesan;
+    }
 }
