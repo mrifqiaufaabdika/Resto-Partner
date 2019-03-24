@@ -9,8 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 
 import com.example.abdialam.restopatner.R;
-import com.example.abdialam.restopatner.activities.kurir.MainKurirActivity;
-import com.example.abdialam.restopatner.activities.resto.AddMenuActivity;
+import com.example.abdialam.restopatner.activities.kurir.KurirMainActivity;
 import com.example.abdialam.restopatner.activities.resto.MainActivity;
 import com.example.abdialam.restopatner.activities.resto.MapsActivity;
 import com.example.abdialam.restopatner.utils.SessionManager;
@@ -59,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
             if(!sessionManager.isRestoran()){
                 //kurir
 
-                Intent intent = new Intent(mContext ,MainKurirActivity.class);
+                Intent intent = new Intent(mContext , KurirMainActivity.class);
                 //    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
                 finish();

@@ -103,7 +103,16 @@
 
                         </android.support.design.widget.TextInputLayout>
 
-                        <android.support.design.widget.TextInputLayout
+                <Spinner
+                    android:id="@+id/spinerPb1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                </Spinner>
+
+
+                <android.support.design.widget.TextInputLayout
                             android:layout_marginTop="10dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">

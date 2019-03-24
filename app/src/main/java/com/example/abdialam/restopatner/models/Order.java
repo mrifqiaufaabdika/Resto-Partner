@@ -37,9 +37,18 @@ public class Order implements Serializable{
     @SerializedName("order_biaya_anatar")
     @Expose
     private String orderBiayaAnatar;
+    @SerializedName("order_pajak_pb_satu")
+    @Expose
+    private Integer order_pajak_pb_satu;
     @SerializedName("order_status")
     @Expose
     private String orderStatus;
+    @SerializedName("order_delivery_id")
+    @Expose
+    private String orderDeliveryId;
+    @SerializedName("order_delivery_type")
+    @Expose
+    private String orderDeliveryType;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -144,6 +153,22 @@ public class Order implements Serializable{
         this.orderStatus = orderStatus;
     }
 
+    public String getOrderDeliveryId() {
+        return orderDeliveryId;
+    }
+
+    public void setOrderDeliveryId(String orderDeliveryId) {
+        this.orderDeliveryId = orderDeliveryId;
+    }
+
+    public String getOrderDeliveryType() {
+        return orderDeliveryType;
+    }
+
+    public void setOrderDeliveryType(String orderDeliveryType) {
+        this.orderDeliveryType = orderDeliveryType;
+    }
+
     public String getCreatedAt() {
         return createdAt;
     }
@@ -182,5 +207,13 @@ public class Order implements Serializable{
 
     public void setDetailOrder(List<Menu> detailOrder) {
         this.detailOrder = detailOrder;
+    }
+
+    public Integer getOrder_pajak_pb_satu() {
+        return order_pajak_pb_satu;
+    }
+
+    public void setOrder_pajak_pb_satu(Integer order_pajak_pb_satu) {
+        this.order_pajak_pb_satu = order_pajak_pb_satu;
     }
 }

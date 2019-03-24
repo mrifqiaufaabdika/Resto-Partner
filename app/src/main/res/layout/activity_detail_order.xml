@@ -342,6 +342,50 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/viewpb1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colordevider"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/lyt_pb1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
+
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/pajak_pb1"
+                android:textSize="@dimen/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PB1 (10%)"
+                android:textColor="@color/textSub"
+                android:background="#0000"
+                android:padding="16dp"
+                android:gravity="left"
+                />
+
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/tvPajakPB1"
+                android:textSize="@dimen/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rp. 10.000"
+                android:textColor="@color/Tex"
+                android:background="#0000"
+                android:padding="16dp"
+                android:gravity="right"
+                />
+        </LinearLayout>
+
+        <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/colordevider"/>

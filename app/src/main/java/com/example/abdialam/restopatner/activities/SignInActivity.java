@@ -9,19 +9,14 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
-import com.example.abdialam.restopatner.activities.VerifyActifity;
-import com.example.abdialam.restopatner.activities.kurir.MainKurirActivity;
 import com.example.abdialam.restopatner.config.ServerConfig;
 import com.example.abdialam.restopatner.models.Kurir;
 import com.example.abdialam.restopatner.models.Restoran;
 import com.example.abdialam.restopatner.responses.ResponseAuth;
-import com.example.abdialam.restopatner.responses.ResponseSignIn;
 import com.example.abdialam.restopatner.rest.ApiService;
 import com.example.abdialam.restopatner.utils.SharedPrefManager;
 

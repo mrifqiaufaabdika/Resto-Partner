@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.ebanx.swipebtn.OnStateChangeListener;
 import com.ebanx.swipebtn.SwipeButton;
 import com.example.abdialam.restopatner.R;
 import com.example.abdialam.restopatner.activities.DeliveryActivity;
+import com.example.abdialam.restopatner.activities.PrintActivity;
 import com.example.abdialam.restopatner.adapter.DetailOrderAdapter;
 import com.example.abdialam.restopatner.config.ServerConfig;
 import com.example.abdialam.restopatner.models.Menu;
@@ -33,8 +35,10 @@ import com.example.abdialam.restopatner.rest.ApiService;
 import com.example.abdialam.restopatner.utils.NonScrollListView;
 import com.example.abdialam.restopatner.utils.SessionManager;
 
+import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,7 +58,7 @@ public class DetailOrderActivity extends AppCompatActivity{
     ApiService mApiService;
     Context mContext ;
     ProgressDialog progressOrder;
-    String id_order;
+    String id_order,type_delivery,id_delivery;
 
     @BindView(R.id.listview)
     NonScrollListView list;
@@ -87,7 +91,14 @@ public class DetailOrderActivity extends AppCompatActivity{
     @BindView(R.id.layoutStatus)
     LinearLayout layoutStatus;
 
+    @BindView(R.id.viewpb1) View viewpb1;
+    @BindView(R.id.lyt_pb1)
+    LinearLayout lyt_pb1;
+    @BindView(R.id.pajak_pb1) TextView pajak_pb1;
+    @BindView(R.id.tvPajakPB1) TextView tvPajakPB1;
+
     SessionManager sessionManager;
+    HashMap<String,String> user;
 
     ProgressDialog progressDialog;
 
@@ -100,6 +111,18 @@ public class DetailOrderActivity extends AppCompatActivity{
         ButterKnife.bind(this);
         mContext = this;
         sessionManager = new SessionManager(mContext);
+
+        if (sessionManager.isRestoran()){
+            type_delivery = "restoran";
+            user = sessionManager.getRestoDetail();
+            id_delivery = user.get(SessionManager.ID_RESTORAN);
+
+        }else {
+            type_delivery = "kurir";
+            user = sessionManager.getKurirDetail();
+            id_delivery = user.get(SessionManager.ID_KURIR);
+        }
+
         mApiService = ServerConfig.getAPIService();
         setListViewHeightBasedOnChildren(list);
         getIncomingIntent();
@@ -116,7 +139,7 @@ public class DetailOrderActivity extends AppCompatActivity{
                 if(active){
 
                     progressDialog = ProgressDialog.show(mContext,null,getString(R.string.memuat),true,true);
-                    mApiService.updateStatusPesan(pesan.getId().toString(),"pengantaran").enqueue(new Callback<ResponseValue>() {
+                    mApiService.updateStatusPengantaran(pesan.getId().toString(),"pengantaran",id_delivery,type_delivery).enqueue(new Callback<ResponseValue>() {
                         @Override
                         public void onResponse(Call<ResponseValue> call, Response<ResponseValue> response) {
                             if(response.isSuccessful()){
@@ -130,8 +153,10 @@ public class DetailOrderActivity extends AppCompatActivity{
                                     intent.putExtra("lat",pesan.getOrderLat().toString());
                                     intent.putExtra("lang",pesan.getOrderLong().toString());
                                     intent.putExtra("alamat",pesan.getOrderAlamat().toString());
+                                    intent.putExtra("id_delivery",id_delivery);
+                                    intent.putExtra("type_delivery",type_delivery);
 //                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    sessionManager.pengantaran(pesan.getId().toString(),pesan.getOrderLat().toString(),pesan.getOrderLong().toString(),pesan.getOrderAlamat().toString());
+                                   // sessionManager.pengantaran(pesan.getId().toString(),pesan.getOrderLat().toString(),pesan.getOrderLong().toString(),pesan.getOrderAlamat().toString());
                                     startActivity(intent);
                                 }else {
                                     progressDialog.dismiss();
@@ -183,6 +208,20 @@ public class DetailOrderActivity extends AppCompatActivity{
         mSubTotal.setText(kursIndonesia(subtotal));
         mBiayaAntar.setText(kursIndonesia(Double.parseDouble(pesan.getOrderBiayaAnatar())));
         double total = subtotal+ Double.parseDouble(pesan.getOrderBiayaAnatar());
+
+        //cek pajak
+        if (pesan.getOrder_pajak_pb_satu() == 0){
+            viewpb1.setVisibility(View.GONE);
+            lyt_pb1.setVisibility(View.GONE);
+        }else{
+            viewpb1.setVisibility(View.VISIBLE);
+            lyt_pb1.setVisibility(View.VISIBLE);
+            pajak_pb1.setText("PB1 ("+pesan.getOrder_pajak_pb_satu()+"%)");
+            double pb1 = (pesan.getOrder_pajak_pb_satu()/100.0)*total;
+            tvPajakPB1.setText(kursIndonesia(pb1));
+            total = total + pb1;
+        }
+
         mTotal.setText(kursIndonesia(total));
         mMetodeBayar.setText(pesan.getOrderMetodeBayar());
         //catatan
@@ -192,11 +231,11 @@ public class DetailOrderActivity extends AppCompatActivity{
 
         }
 
-        if(sessionManager.isPengantaran()) {
-            Toast.makeText(mContext,""+sessionManager.isPengantaran(),Toast.LENGTH_SHORT).show();
-            mSwipeDelivery.setVisibility(View.GONE);
-            tvPengantaran.setVisibility(View.VISIBLE);
-        }
+//        if(sessionManager.isPengantaran()) {
+//            Toast.makeText(mContext,""+sessionManager.isPengantaran(),Toast.LENGTH_SHORT).show();
+//            mSwipeDelivery.setVisibility(View.GONE);
+//            tvPengantaran.setVisibility(View.VISIBLE);
+//        }
 
         if (!sessionManager.isRestoran()){
             mCancel.setVisibility(View.GONE);
@@ -320,6 +359,8 @@ public class DetailOrderActivity extends AppCompatActivity{
                         Intent intent = new Intent(mContext,MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
+                    }else {
+                        Toast.makeText(mContext,"Gagal Batal Pesanan",Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -332,5 +373,24 @@ public class DetailOrderActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_print,menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.action_print){
+            Intent intent = new Intent(mContext, PrintActivity.class);
+            intent.putExtra("pesan", (Serializable) pesan);
+            mContext.startActivity(intent);
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

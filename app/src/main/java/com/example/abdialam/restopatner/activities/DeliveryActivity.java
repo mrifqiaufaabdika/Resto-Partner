@@ -6,14 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,8 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
-import com.example.abdialam.restopatner.activities.kurir.MainKurirActivity;
-import com.example.abdialam.restopatner.activities.resto.DetailOrderActivity;
+import com.example.abdialam.restopatner.activities.kurir.KurirMainActivity;
+import com.example.abdialam.restopatner.activities.kurir.OrderFragment;
 import com.example.abdialam.restopatner.activities.resto.MainActivity;
 import com.example.abdialam.restopatner.adapter.DetailOrderAdapter;
 import com.example.abdialam.restopatner.config.ServerConfig;
@@ -42,28 +40,23 @@ import com.example.abdialam.restopatner.models.Delivery;
 import com.example.abdialam.restopatner.models.Menu;
 import com.example.abdialam.restopatner.models.Order;
 import com.example.abdialam.restopatner.responses.ResponseOneOrder;
-import com.example.abdialam.restopatner.responses.ResponseOrder;
 import com.example.abdialam.restopatner.responses.ResponseValue;
 import com.example.abdialam.restopatner.rest.ApiService;
 import com.example.abdialam.restopatner.utils.AbsRunTimePermission;
 import com.example.abdialam.restopatner.utils.NonScrollListView;
 import com.example.abdialam.restopatner.utils.SessionManager;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -83,7 +76,7 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
 
     LocationManager lm;
     LocationListener locationListener;
-    String latt, langg;
+    String latt, langg,type_delivery,id_delivery,order_type_delivery,order_id_delivery;
 
     private GoogleMap mMap;
     Marker marker;
@@ -109,6 +102,8 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
     TextView mBiayaantar;
     @BindView(R.id.btnBatal)
     TextView btnBatal;
+    @BindView(R.id.pb1)
+    TextView mPb1;
 
     String id_order, lat, lang, alamat;
     Order pesan;
@@ -117,6 +112,7 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
     private DetailOrderAdapter orderAdapter;
     ApiService mApiService;
     SessionManager sessionManager;
+    HashMap<String,String> user;
 
     ProgressDialog progressOn, progressOrder, progressChnageMetode;
 
@@ -135,12 +131,31 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
         ButterKnife.bind(this);
         //mengambil referensi ke firebase database
         database = FirebaseDatabase.getInstance().getReference();
-
         getIncomingIntent();
         pickUpLatLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lang));
         mContext = this;
         sessionManager = new SessionManager(mContext);
         mApiService = ServerConfig.getAPIService();
+
+        if (sessionManager.isRestoran()){
+            type_delivery = "restoran";
+            user = sessionManager.getRestoDetail();
+            id_delivery = user.get(SessionManager.ID_RESTORAN);
+
+        }else {
+            type_delivery = "kurir";
+            user = sessionManager.getKurirDetail();
+            id_delivery = user.get(SessionManager.ID_KURIR);
+        }
+
+        if (order_id_delivery.equalsIgnoreCase(id_delivery)&&order_type_delivery.equalsIgnoreCase(type_delivery)) {
+            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationListener = new MyLocationListener();
+            //lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10 * 1000L, 0, locationListener);
+        }
+
+
+
 
 
         //request permission here
@@ -156,23 +171,9 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
 //                        Manifest.permission.ACCESS_COARSE_LOCATION},
 //                R.string.msg, REQUEST_PERMISSION);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
 
 
-        if (sessionManager.isPengantaran()) {
-            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            locationListener = new MyLocationListener();
-            //lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10 * 1000L, 0, locationListener);
-        }
+
 
 
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
@@ -227,10 +228,13 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
                             if(response.body().getValue().equals("1")){
                                 btnBayar.showResultIcon(true);
                                 Toast.makeText(mContext,"Selesai Pengantaran",Toast.LENGTH_SHORT).show();
-                                sessionManager.selesaiPenganataran();
-                                lm.removeUpdates(locationListener);
-                                lm = null;
+                                if (order_id_delivery.equalsIgnoreCase(id_delivery)&&order_type_delivery.equalsIgnoreCase(type_delivery)) {
+                                    //sessionManager.selesaiPenganataran();
+                                    lm.removeUpdates(locationListener);
+                                    lm = null;
+                                }
                             }else if(response.body().getValue().equals("2")){
+
                                 btnBayar.showResultIcon(false);
                                 alertChangeMetode();
                                 Toast.makeText(mContext,"saldo tidak mencukupi",Toast.LENGTH_SHORT).show();
@@ -257,14 +261,13 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
         super.onResume();
         progressOn = ProgressDialog.show(mContext,null,getString(R.string.memuat),true,true);
         getData();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             absRuntimePermission.requestAppPermissions(new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION},
                     R.string.msg, REQUEST_PERMISSION);
         }
-
-        if (sessionManager.isPengantaran()) {
+        if (order_id_delivery.equalsIgnoreCase(id_delivery)&&order_type_delivery.equalsIgnoreCase(type_delivery)) {
             lm.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
                     0,
@@ -272,6 +275,7 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
                     locationListener
             );
         }
+
     }
 
     private void getIncomingIntent (){
@@ -281,6 +285,8 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
             lat = getIntent().getStringExtra("lat");
             lang = getIntent().getStringExtra("lang");
             alamat = getIntent().getStringExtra("alamat");
+            order_id_delivery = getIntent().getStringExtra("id_delivery");
+            order_type_delivery = getIntent().getStringExtra("type_delivery");
         }
     }
 
@@ -349,6 +355,19 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
             }
         }
         total = total+ Double.parseDouble(pesan.getOrderBiayaAnatar());
+
+        //cek pajak
+        if (pesan.getOrder_pajak_pb_satu() == 0){
+            mPb1.setVisibility(View.GONE);
+
+        }else{
+            mPb1.setVisibility(View.VISIBLE);
+            double pb1 = (pesan.getOrder_pajak_pb_satu()/100.0)*total;
+            total = total + pb1;
+            mPb1.setText("PB1 ("+pesan.getOrder_pajak_pb_satu()+"%) "+kursIndonesia(pb1));
+
+        }
+
         mTotal.setText(kursIndonesia(total)+"-"+pesan.getOrderMetodeBayar());
 
         if (pesan.getOrderStatus().equalsIgnoreCase("seleai")){
@@ -377,6 +396,9 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
                         //set value
                         orderAdapter = new DetailOrderAdapter(DeliveryActivity.this,menuList);
                         list.setAdapter(orderAdapter);
+
+
+
                         setValue();
                     }else {
                         progressOn.dismiss();
@@ -460,7 +482,7 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
     public void onBackPressed() {
         Intent intent;
         if (!sessionManager.isRestoran()){
-            intent = new Intent(mContext, MainKurirActivity.class);
+            intent = new Intent(mContext, KurirMainActivity.class);
         }else {
             intent = new Intent(mContext, MainActivity.class);
         }
@@ -599,9 +621,11 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
                         Intent intent = new Intent(mContext,MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-                        sessionManager.selesaiPenganataran();
-                        lm.removeUpdates(locationListener);
-                        lm = null;
+                        if (order_id_delivery.equalsIgnoreCase(id_delivery)&&order_type_delivery.equalsIgnoreCase(type_delivery)) {
+                            sessionManager.selesaiPenganataran();
+                            lm.removeUpdates(locationListener);
+                            lm = null;
+                        }
                     }
                 }
             }
@@ -626,10 +650,10 @@ public class DeliveryActivity extends AppCompatActivity implements OnMapReadyCal
 
                 langg = String.valueOf(location.getLongitude());
                 HashMap<String,String> pengantaran = sessionManager.getPengantaran();
-                mAlamatAntar.setText(pengantaran.get(SessionManager.ID_PENGANTARAN)+","+ (a++) +","+latt+" , "+langg);
+                //mAlamatAntar.setText(id_order+","+ (a++) +","+latt+" , "+langg);
 
                 //Toast.makeText(DeliveryActivity.this, latt + ","+ id_order+"," + langg, Toast.LENGTH_SHORT).show();
-                Delivery delivery = new Delivery(pengantaran.get(SessionManager.ID_PENGANTARAN).toString(),latt,langg);
+                Delivery delivery = new Delivery(id_order,latt,langg);
                 updateDelivery(delivery);
 
             }

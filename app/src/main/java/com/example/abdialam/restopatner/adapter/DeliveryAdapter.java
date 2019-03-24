@@ -16,9 +16,11 @@ import com.example.abdialam.restopatner.activities.DeliveryActivity;
 import com.example.abdialam.restopatner.activities.resto.DetailOrderActivity;
 import com.example.abdialam.restopatner.models.Menu;
 import com.example.abdialam.restopatner.models.Order;
+import com.example.abdialam.restopatner.utils.SessionManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,6 +31,9 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.MyView
     Context mContext;
     List<Order> pesanList = new ArrayList<>();
     List<Menu> detailorderList = new ArrayList<>();
+    SessionManager sessionManager;
+    HashMap<String,String> user;
+    String type_delivery,id_delivery;
 
     public DeliveryAdapter (Context context,List<Order> data){
         this.mContext = context;
@@ -43,6 +48,20 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.MyView
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row_order_list,parent,false);
         DeliveryAdapter.MyViewHolder holder = new DeliveryAdapter.MyViewHolder(view);
+        sessionManager = new SessionManager(mContext);
+        if (sessionManager.isRestoran()){
+            type_delivery = "restoran";
+            user = sessionManager.getRestoDetail();
+            id_delivery = user.get(SessionManager.ID_RESTORAN);
+
+        }else {
+            type_delivery = "kurir";
+            user = sessionManager.getKurirDetail();
+            id_delivery = user.get(SessionManager.ID_KURIR);
+        }
+
+
+
         return  holder;
     }
 
@@ -74,6 +93,8 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.MyView
                 intent.putExtra("lat",order.getOrderLat().toString());
                 intent.putExtra("lang",order.getOrderLong().toString());
                 intent.putExtra("alamat",order.getOrderAlamat().toString());
+                intent.putExtra("id_delivery",id_delivery);
+                intent.putExtra("type_delivery",type_delivery);
                 mContext.startActivity(intent);
             }
         });
@@ -113,5 +134,27 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.MyView
             jarakStr = jarak + " Km";
         }
         return jarakStr;
+    }
+
+    // Clean all elements of the recycler
+
+    public void clear() {
+
+        pesanList.clear();
+
+        notifyDataSetChanged();
+
+    }
+
+
+
+// Add a list of items -- change to type used
+
+    public void addAll(List<Order> list) {
+
+        pesanList.addAll(list);
+
+        notifyDataSetChanged();
+
     }
 }

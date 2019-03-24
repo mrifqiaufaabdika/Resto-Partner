@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
 import com.example.abdialam.restopatner.activities.DeliveryActivity;
+import com.example.abdialam.restopatner.activities.ListDeliveryActivity;
 import com.example.abdialam.restopatner.adapter.PagerOrderTabAdapter;
 import com.example.abdialam.restopatner.config.ServerConfig;
 import com.example.abdialam.restopatner.responses.ResponseValue;
@@ -116,18 +117,20 @@ public class OrderFragment extends Fragment {
         btnPengantaran.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sessionManager.isPengantaran()){
-                    HashMap<String,String> pengantaran = sessionManager.getPengantaran();
-                    Intent intent = new Intent(mContext, DeliveryActivity.class);
-                    intent.putExtra("pesan",pengantaran.get(SessionManager.ID_PENGANTARAN));
-                    intent.putExtra("lat",pengantaran.get(SessionManager.LAT));
-                    intent.putExtra("lang",pengantaran.get(SessionManager.LANG));
-                    intent.putExtra("alamat",pengantaran.get(SessionManager.ALAMAT));
-//                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(mContext,"Anda Tidak Dalam Pengantaran",Toast.LENGTH_SHORT).show();
-                }
+//                if(sessionManager.isPengantaran()){
+//                    HashMap<String,String> pengantaran = sessionManager.getPengantaran();
+//                    Intent intent = new Intent(mContext, DeliveryActivity.class);
+//                    intent.putExtra("pesan",pengantaran.get(SessionManager.ID_PENGANTARAN));
+//                    intent.putExtra("lat",pengantaran.get(SessionManager.LAT));
+//                    intent.putExtra("lang",pengantaran.get(SessionManager.LANG));
+//                    intent.putExtra("alamat",pengantaran.get(SessionManager.ALAMAT));
+////                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent);
+//                }else {
+//                    Toast.makeText(mContext,"Anda Tidak Dalam Pengantaran",Toast.LENGTH_SHORT).show();
+//                }
+                Intent intent = new Intent(mContext, ListDeliveryActivity.class);
+                startActivity(intent);
             }
         });
 

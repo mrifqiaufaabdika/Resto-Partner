@@ -1,8 +1,7 @@
-package com.example.abdialam.restopatner.activities.kurir;
+package com.example.abdialam.restopatner.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -12,23 +11,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
-import com.example.abdialam.restopatner.activities.DeliveryActivity;
-import com.example.abdialam.restopatner.activities.SignInActivity;
+import com.example.abdialam.restopatner.adapter.DeliveryAdapter;
 import com.example.abdialam.restopatner.adapter.OrderAdapter;
 import com.example.abdialam.restopatner.config.ServerConfig;
 import com.example.abdialam.restopatner.models.Order;
 import com.example.abdialam.restopatner.responses.ResponseOrder;
 import com.example.abdialam.restopatner.rest.ApiService;
 import com.example.abdialam.restopatner.utils.SessionManager;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,16 +32,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainKurirActivity extends AppCompatActivity{
+public class ListDeliveryActivity extends AppCompatActivity{
 
     SessionManager sessionManager;
     HashMap<String,String> user ;
     Context mContext;
     RecyclerView recyclerView;
-    OrderAdapter orderAdapter;
+    DeliveryAdapter orderAdapter;
     List<Order> orderList;
     ApiService mApiService;
     CoordinatorLayout coordinatorLayout;
+    String id_delivery,type_delivery;
 
     View message;
     ImageView icon_message;
@@ -57,14 +52,28 @@ public class MainKurirActivity extends AppCompatActivity{
 
     ProgressDialog progressDialog;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout._activity_main_kurir);
         mContext = this;
+        getSupportActionBar().setTitle("Daftar Pengantaran");
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         mApiService = ServerConfig.getAPIService();
         sessionManager = new SessionManager(mContext);
+
+        if (sessionManager.isRestoran()){
+            type_delivery = "restoran";
+            user = sessionManager.getRestoDetail();
+            id_delivery = user.get(SessionManager.ID_RESTORAN);
+
+        }else {
+            type_delivery = "kurir";
+            user = sessionManager.getKurirDetail();
+            id_delivery = user.get(SessionManager.ID_KURIR);
+        }
+
         user = sessionManager.getKurirDetail();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -82,7 +91,7 @@ public class MainKurirActivity extends AppCompatActivity{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-               newAsycn();
+                newAsycn();
             }
         });
 
@@ -91,32 +100,49 @@ public class MainKurirActivity extends AppCompatActivity{
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+
     }
 
     private void newAsycn() {
-        String id_restoran = user.get(SessionManager.ID_RESTORAN).toString();
+
         ArrayList<String> status = new ArrayList<String>();
-        status.add("proses");
-        mApiService.getOrder(id_restoran,status).enqueue(new Callback<ResponseOrder>() {
+            status.add("proses");
+            mApiService.getOrderOnDelivery(id_delivery,type_delivery).enqueue(new Callback<ResponseOrder>() {
             @Override
             public void onResponse(Call<ResponseOrder> call, Response<ResponseOrder> response) {
-                if (response.isSuccessful()){
-                    if (response.body().getValue().equals("1")){
-                        orderAdapter.clear();
-                        orderAdapter.addAll(response.body().getData());
+                if (response.isSuccessful()) {
+                    if (response.body().getValue().equals("1")) {
+                        if (orderAdapter != null) {
+                            orderAdapter.clear();
+                            orderAdapter.addAll(response.body().getData());
+                        } else {
+                            orderAdapter = new DeliveryAdapter(mContext, response.body().getData());
+                            recyclerView.setAdapter(orderAdapter);
+                            message.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+//                            orderAdapter.clear();
+//                            orderAdapter.addAll(response.body().getData());
+                        }
+
                         swipeRefreshLayout.setRefreshing(false);
+                    } else {
+                        swipeRefreshLayout.setRefreshing(false);
+                        message.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.INVISIBLE);
+                        icon_message.setImageResource(R.drawable.msg_courier);
+                        title_message.setText("Anda Tidak Memiliki Pengantaran ");
                     }
                 }
-
             }
 
             @Override
             public void onFailure(Call<ResponseOrder> call, Throwable t) {
-                    swipeRefreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setRefreshing(false);
                 Snackbar.make(coordinatorLayout,R.string.loss_connect, Snackbar.LENGTH_LONG).show();
             }
         });
     }
+
 
     @Override
     protected void onResume() {
@@ -129,7 +155,7 @@ public class MainKurirActivity extends AppCompatActivity{
         String id_restoran = user.get(SessionManager.ID_RESTORAN).toString();
         ArrayList<String> status = new ArrayList<String>();
         status.add("proses");
-        mApiService.getOrder(id_restoran,status).enqueue(new Callback<ResponseOrder>() {
+        mApiService.getOrderOnDelivery(id_delivery,type_delivery).enqueue(new Callback<ResponseOrder>() {
             @Override
             public void onResponse(Call<ResponseOrder> call, Response<ResponseOrder> response) {
                 orderList = response.body().getData();
@@ -138,14 +164,15 @@ public class MainKurirActivity extends AppCompatActivity{
                 if(value.equals("1"))
                 {
                     progressDialog.dismiss();
-                    orderAdapter = new OrderAdapter(mContext,orderList);
+                    orderAdapter = new DeliveryAdapter(mContext,orderList);
                     recyclerView.setAdapter(orderAdapter);
                 }else {
                     progressDialog.dismiss();
                     progressDialog.dismiss();
                     message.setVisibility(View.VISIBLE);
-                    icon_message.setImageResource(R.drawable.msg_checklist);
-                    title_message.setText("Anda Tidak Memiliki Pesanan ");
+                    recyclerView.setVisibility(View.INVISIBLE);
+                    icon_message.setImageResource(R.drawable.msg_courier);
+                    title_message.setText("Anda Tidak Memiliki Pengantaran ");
                 }
 
 
@@ -165,44 +192,4 @@ public class MainKurirActivity extends AppCompatActivity{
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_kurir,menu);
-        return  true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_pengantaran:
-                if(sessionManager.isPengantaran()){
-                    HashMap<String,String> pengantaran = sessionManager.getPengantaran();
-                    Intent intent = new Intent(mContext, DeliveryActivity.class);
-                    intent.putExtra("pesan",pengantaran.get(SessionManager.ID_PENGANTARAN));
-                    intent.putExtra("lat",pengantaran.get(SessionManager.LAT));
-                    intent.putExtra("lang",pengantaran.get(SessionManager.LANG));
-                    intent.putExtra("alamat",pengantaran.get(SessionManager.ALAMAT));
-//                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(mContext,"Anda Tidak Dalam Pengantaran",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.account:
-                break;
-            case R.id.Logout:
-                FirebaseAuth.getInstance().signOut();
-                sessionManager.logoutUser();
-                Intent intent = new Intent(mContext, SignInActivity.class);
-                startActivity(intent);
-                finish();
-                break;
-        }
-        return true;
-    }
-    
-    
-    
 }

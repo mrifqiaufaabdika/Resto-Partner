@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -91,9 +92,19 @@ public class EditPemilikActivity extends AppCompatActivity {
             etEmail.setError("Field Tidak Boleh Kosong");
             etEmail.requestFocus();
             return;
+        }else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            progressDialog.dismiss();
+            etEmail.setError("Email Tidak Valid");
+            etEmail.requestFocus();
+            return;
         }else if (phone.isEmpty()||phone.equals(null)) {
             progressDialog.dismiss();
             etPhone.setError("Field Tidak Boleh Kosong");
+            etPhone.requestFocus();
+            return;
+        }else if (phone.length()<12) {
+            progressDialog.dismiss();
+            etPhone.setError("Nomor Phone Tidak valid");
             etPhone.requestFocus();
             return;
         }else {

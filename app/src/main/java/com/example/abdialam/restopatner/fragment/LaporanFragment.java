@@ -104,35 +104,12 @@ public class LaporanFragment extends Fragment {
 
     }
 
-
-    //listview not scrolll
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            // pre-condition
-            return;
-        }
-
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-        listView.requestLayout();
-    }
-
-
     void getData(){
         mApiService.laporan(user.get(SessionManager.ID_RESTORAN)).enqueue(new Callback<ResponseLaporan>() {
             @Override
             public void onResponse(Call<ResponseLaporan> call, Response<ResponseLaporan> response) {
                 if(response.isSuccessful()){
-                   menuList = response.body().getMenu();
+                    menuList = response.body().getMenu();
                     laporanAdapter = new LaporanAdapter(mContext,menuList);
                     list.setAdapter(laporanAdapter);
                     mPesanHarian.setText(response.body().getJumlahOrder().toString());
@@ -156,4 +133,27 @@ public class LaporanFragment extends Fragment {
             }
         });
     }
+
+    //listview not scrolll
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
 }

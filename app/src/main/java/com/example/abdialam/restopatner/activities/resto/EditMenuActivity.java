@@ -17,12 +17,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +36,8 @@ import com.example.abdialam.restopatner.R;
 import com.example.abdialam.restopatner.config.ServerConfig;
 import com.example.abdialam.restopatner.models.Menu;
 import com.example.abdialam.restopatner.models.Order;
+import com.example.abdialam.restopatner.models.Satuan;
+import com.example.abdialam.restopatner.responses.ResponseSatuan;
 import com.example.abdialam.restopatner.responses.ResponseValue;
 import com.example.abdialam.restopatner.rest.ApiService;
 import com.example.abdialam.restopatner.utils.SessionManager;
@@ -38,7 +45,11 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.PipedInputStream;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,6 +77,10 @@ public class EditMenuActivity extends AppCompatActivity {
         private ProgressDialog progressDialog;
         String ketersediaan = "0";
         Menu menu;
+        int idSatuan;
+        String idSatuanStr;
+        List<Satuan> semuaSatuanItems;
+
 
 
         @BindView(R.id.imageViewMenu)
@@ -86,6 +101,8 @@ public class EditMenuActivity extends AppCompatActivity {
         TextView mDeleteMenu;
         @BindView(R.id.coordinatorLayout)
         CoordinatorLayout coordinatorLayout;
+        @BindView(R.id.spinnerSatuan)
+        Spinner spinnerSatuan;
 
         @Override
         protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +110,7 @@ public class EditMenuActivity extends AppCompatActivity {
             setContentView(R.layout.activity_add_menu);
             mContext = this;
             ButterKnife.bind(this);
+            setCurrency(mHargaMenu);
             mApiService = ServerConfig.getAPIService();
             getIncomingIntent();
             sessionManager = new SessionManager(mContext);
@@ -181,32 +199,53 @@ public class EditMenuActivity extends AppCompatActivity {
 
             if(mNamamenu.getText().toString().isEmpty()||mNamamenu.getText().toString().equals(null)) {
                 progressDialog.dismiss();
-                mNamamenu.setError("Nama diperlukan");
+                mNamamenu.setError("Nama menu diperlukan");
                 mNamamenu.requestFocus();
                 return;
-            }else if(mHargaMenu.getText().toString().isEmpty()||mHargaMenu.getText().toString().equals(null)){
+            }else if(mHargaMenu.getText().toString().toString().replaceAll("[.]","").isEmpty()||mHargaMenu.getText().toString().toString().replaceAll("[.]","").equals(null)){
                 progressDialog.dismiss();
-                mHargaMenu.setError("Nomor telepon diperlukan");
+                mHargaMenu.setError("Harga diperlukan");
                 mHargaMenu.requestFocus();
                 return;
             }else if(mDeskripsi.getText().toString().isEmpty()||mDeskripsi.getText().toString().equals(null)){
                 progressDialog.dismiss();
-                mDeskripsi.setError("Email diperlukan");
+                mDeskripsi.setError("Deskripsi diperlukan");
                 mDeskripsi.requestFocus();
                 return;
             }else if(mDiscountMenu.getText().toString().equals(null)||mDiscountMenu.getText().toString().isEmpty()){
                 progressDialog.dismiss();
-                mDiscountMenu.setError("Email tidak valid");
+                mDiscountMenu.setError("Discount diperlukan");
                 mDiscountMenu.requestFocus();
                 return;
             }else {
 
+
+//                spinnerSatuan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                    @Override
+//                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                        //String selectedName = parent.getItemAtPosition(position).toString();
+//                        Satuan satuan = (Satuan) parent.getSelectedItem();
+//                        idSatuanStr= satuan.getId().toString();
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onNothingSelected(AdapterView<?> parent) {
+//                        Satuan satuan = (Satuan) parent.getSelectedItem();
+//                        idSatuanStr = satuan.getId().toString();
+//
+//                    }
+//                });
+
                 if((mediaPath.equals(null))||(mediaPath.isEmpty())) {
                     noPhoto();
-                    Toast.makeText(mContext,"with out Photo",Toast.LENGTH_SHORT).show();
+
+                   // Toast.makeText(mContext,"with out Photo "+  semuaSatuanItems.get(spinnerSatuan.getSelectedItemPosition()).getId().toString(),Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(mContext,"with Photo",Toast.LENGTH_SHORT).show();
-                    withPhoto();
+                   // Toast.makeText(mContext,"with Photo "+semuaSatuanItems.get(spinnerSatuan.getSelectedItemPosition()).getId().toString(),Toast.LENGTH_SHORT).show();
+
+                     withPhoto();
 
                 }
 
@@ -215,8 +254,48 @@ public class EditMenuActivity extends AppCompatActivity {
         }
 
         private void setData() {
+
+            final ProgressDialog loading = ProgressDialog.show(mContext, null, "harap tunggu...", true, false);
+
+
+
+
+            mApiService.satuan().enqueue(new Callback<ResponseSatuan>() {
+                @Override
+                public void onResponse(Call<ResponseSatuan> call, Response<ResponseSatuan> response) {
+                    if (response.isSuccessful()) {
+                        loading.dismiss();
+                        semuaSatuanItems = response.body().getSatuan();
+                        List<String> id = new ArrayList<String>();
+                        List<String> listSpinner = new ArrayList<String>();
+                        for (int i = 0; i < semuaSatuanItems.size(); i++){
+                            id.add(semuaSatuanItems.get(i).getId().toString());
+                            listSpinner.add(semuaSatuanItems.get(i).getSatuanNama());
+
+                            if(semuaSatuanItems.get(i).getId().equals(menu.getIdSatuan())){
+                                idSatuan= i;
+                            }
+                        }
+                        // Set hasil result json ke dalam adapter spinner
+                        ArrayAdapter<Satuan> adapter = new ArrayAdapter<Satuan>(mContext, android.R.layout.simple_spinner_dropdown_item, semuaSatuanItems);
+                        spinnerSatuan.setAdapter(adapter);
+
+                        spinnerSatuan.setSelection((int) adapter.getItemId(idSatuan));
+                    } else {
+                        loading.dismiss();
+                        Toast.makeText(mContext, "Gagal mengambil data dosen", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseSatuan> call, Throwable t) {
+                    loading.dismiss();
+                    Toast.makeText(mContext, "Koneksi internet bermasalah", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             mNamamenu.setText(menu.getMenuNama());
-            mHargaMenu.setText(menu.getMenuHarga());
+            mHargaMenu.setText(kursIndonesia(Double.parseDouble(menu.getMenuHarga())));
             mDiscountMenu.setText("0");
             mDeskripsi.setText(menu.getMenuDeskripsi());
             Boolean value = false;
@@ -261,23 +340,24 @@ public class EditMenuActivity extends AppCompatActivity {
         MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("menu_foto", file.getName(), requestBody);
         RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
         RequestBody menu_nama = RequestBody.create(MediaType.parse("text/plain"), mNamamenu.getText().toString());
-        RequestBody menu_harga = RequestBody.create(MediaType.parse("text/plain"), mHargaMenu.getText().toString());
+        RequestBody menu_harga = RequestBody.create(MediaType.parse("text/plain"), mHargaMenu.getText().toString().toString().replaceAll("[.]",""));
         RequestBody menu_deskripsi = RequestBody.create(MediaType.parse("text/plain"), mDeskripsi.getText().toString());
         RequestBody menu_discount = RequestBody.create(MediaType.parse("text/plain"), mDiscountMenu.getText().toString());
         RequestBody id_restoran = RequestBody.create(MediaType.parse("text/plain"), id_restoranStr);
         RequestBody id_kategori = RequestBody.create(MediaType.parse("text/plain"), id_kategoriStr);
         RequestBody menu_ketersediaan = RequestBody.create(MediaType.parse("text/plain"),ketersediaan);
+        RequestBody id_stuan = RequestBody.create(MediaType.parse("text/plain"),semuaSatuanItems.get(spinnerSatuan.getSelectedItemPosition()).getId().toString());
 
 
 
-        mApiService.editMenuWithPoto(id_menu,fileToUpload, menu_nama, menu_deskripsi, menu_harga, id_restoran, id_kategori, menu_discount, menu_ketersediaan).enqueue(new Callback<ResponseValue>() {
+        mApiService.editMenuWithPoto(id_menu,fileToUpload, menu_nama, menu_deskripsi, menu_harga, id_restoran, id_kategori,id_stuan, menu_discount, menu_ketersediaan).enqueue(new Callback<ResponseValue>() {
             @Override
             public void onResponse(Call<ResponseValue> call, Response<ResponseValue> response) {
                 if (response.isSuccessful()) {
                     String message = response.body().getMessage();
                     if (response.body().getValue().equals("1")) {
                         Snackbar.make(coordinatorLayout,message,Snackbar.LENGTH_LONG).show();
-                        clear();
+                       // clear();
                     } else {
                         Snackbar.make(coordinatorLayout,message,Snackbar.LENGTH_SHORT).show();
                     }
@@ -293,18 +373,20 @@ public class EditMenuActivity extends AppCompatActivity {
     }
 
     private void noPhoto(){
+
         String menu_foto =  menu.getMenuFoto();
         String menu_nama =  mNamamenu.getText().toString();
-        String menu_harga =  mHargaMenu.getText().toString();
+        String menu_harga =  mHargaMenu.getText().toString().toString().replaceAll("[.]","");
         String menu_deskripsi =  mDeskripsi.getText().toString();
         String menu_discount = mDiscountMenu.getText().toString();
         String id_restoran = id_restoranStr;
         String id_kategori =id_kategoriStr;
+        String id_satuan = semuaSatuanItems.get(spinnerSatuan.getSelectedItemPosition()).getId().toString();
         String menu_ketersediaan = ketersediaan;
 
 
 
-        mApiService.editMenu(id_menu,menu_foto, menu_nama, menu_deskripsi, menu_harga, id_restoran, id_kategori, menu_discount, menu_ketersediaan).enqueue(new Callback<ResponseValue>() {
+        mApiService.editMenu(id_menu,menu_foto, menu_nama, menu_deskripsi, menu_harga, id_restoran, id_kategori,id_satuan, menu_discount, menu_ketersediaan).enqueue(new Callback<ResponseValue>() {
             @Override
             public void onResponse(Call<ResponseValue> call, Response<ResponseValue> response) {
                 progressDialog.dismiss();
@@ -391,6 +473,73 @@ public class EditMenuActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
+
+    //konfersi ke mata uang rupiah
+    public String kursIndonesia(double nominal){
+        Locale localeID = new Locale("in","ID");
+        NumberFormat formatRupiah = NumberFormat.getCurrencyInstance(localeID);
+        String idnNominal = formatRupiah.format(nominal);
+        return idnNominal;
+    }
+
+
+
+    private void setCurrency(final EditText edt) {
+        edt.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().equals(current)) {
+                    edt.removeTextChangedListener(this);
+
+                    Locale local = new Locale("id", "id");
+                    String replaceable = String.format("[Rp,.\\s]",
+                            NumberFormat.getCurrencyInstance().getCurrency()
+                                    .getSymbol(local));
+                    String cleanString = s.toString().replaceAll(replaceable,
+                            "");
+
+                    double parsed;
+                    try {
+                        parsed = Double.parseDouble(cleanString);
+                    } catch (NumberFormatException e) {
+                        parsed = 0.00;
+                    }
+
+                    NumberFormat formatter = NumberFormat
+                            .getCurrencyInstance(local);
+                    formatter.setMaximumFractionDigits(0);
+                    formatter.setParseIntegerOnly(true);
+                    String formatted = formatter.format((parsed));
+
+                    String replace = String.format("[Rp\\s]",
+                            NumberFormat.getCurrencyInstance().getCurrency()
+                                    .getSymbol(local));
+                    String clean = formatted.replaceAll(replace, "");
+
+                    current = formatted;
+                    edt.setText(clean);
+                    edt.setSelection(clean.length());
+                    edt.addTextChangedListener(this);
+                }
+            }
+        });
+    }
+
 
 
 }

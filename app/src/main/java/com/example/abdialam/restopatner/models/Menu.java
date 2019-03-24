@@ -16,9 +16,15 @@ public class Menu implements Serializable {
     @SerializedName("id_kategori")
     @Expose
     private Integer idKategori;
+    @SerializedName("id_satuan")
+    @Expose
+    private Integer idSatuan;
     @SerializedName("menu_nama")
     @Expose
     private String menuNama;
+    @SerializedName("menu_satuan")
+    @Expose
+    private String menuSatuan;
     @SerializedName("menu_foto")
     @Expose
     private String menuFoto;
@@ -149,5 +155,21 @@ public class Menu implements Serializable {
 
     public void setMenuJumlahDipesan(Integer menuJumlahDipesan) {
         this.menuJumlahDipesan = menuJumlahDipesan;
+    }
+
+    public String getMenuSatuan() {
+        return menuSatuan;
+    }
+
+    public void setMenuSatuan(String menuSatuan) {
+        this.menuSatuan = menuSatuan;
+    }
+
+    public Integer getIdSatuan() {
+        return idSatuan;
+    }
+
+    public void setIdSatuan(Integer idSatuan) {
+        this.idSatuan = idSatuan;
     }
 }

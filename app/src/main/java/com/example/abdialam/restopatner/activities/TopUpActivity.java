@@ -8,7 +8,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,9 +39,9 @@ public class TopUpActivity extends AppCompatActivity{
     @BindView(R.id.tvMaxTransfer)
     TextView mMaxTransfer;
     @BindView(R.id.etNominal1)
-    TextView mNominal1;
+    EditText mNominal1;
     @BindView(R.id.etNominal2)
-    TextView mNominal2;
+    EditText mNominal2;
     @BindView(R.id.btnTransfer)
     Button btnTransfer;
 
@@ -56,8 +59,8 @@ public class TopUpActivity extends AppCompatActivity{
     @OnClick(R.id.btnTransfer) void Transfer(){
         progressDialog = ProgressDialog.show(this,null,getString(R.string.memuat),true,false);
 
-        String nominal1 = mNominal1.getText().toString();
-        String nominal2 = mNominal2.getText().toString();
+        String nominal1 = mNominal1.getText().toString().replaceAll("[.]","");
+        String nominal2 = mNominal2.getText().toString().replaceAll("[.]","");
         Double balance = Double.parseDouble(restoran.getRestoranBalance());
 
         if(nominal1.isEmpty()||nominal1.equals(null)) {
@@ -99,6 +102,9 @@ public class TopUpActivity extends AppCompatActivity{
         mContext = this;
         getSupportActionBar().setTitle("Top Up");
         ButterKnife.bind(this);
+        setCurrency(mNominal1);
+        setCurrency(mNominal2);
+
         getIncomingIntent();
         sessionManager = new SessionManager(this);
 
@@ -209,14 +215,14 @@ public class TopUpActivity extends AppCompatActivity{
     private void alertKonfirmasi() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Konfirmasi Transfer");
-        builder.setMessage("Anda akan transfer "+kursIndonesia(Double.parseDouble(mNominal2.getText().toString()))+"\ndengan penerima "+nama_konsumen.toUpperCase());
+        builder.setMessage("Anda akan transfer "+kursIndonesia(Double.parseDouble(mNominal2.getText().toString().replaceAll("[.]","")))+"\ndengan penerima "+nama_konsumen.toUpperCase());
         builder.setCancelable(false);
         builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //send data to server
                 progressSend = ProgressDialog.show(mContext,null,"Transfer...",true,false);
-                onTransfer(mNominal2.getText().toString());
+                onTransfer(mNominal2.getText().toString().replaceAll("[.]",""));
                 // intentSucess();
 
             }
@@ -239,6 +245,63 @@ public class TopUpActivity extends AppCompatActivity{
         });
         alert.show();
 
+    }
+
+
+
+    private void setCurrency(final EditText edt) {
+        edt.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().equals(current)) {
+                    edt.removeTextChangedListener(this);
+
+                    Locale local = new Locale("id", "id");
+                    String replaceable = String.format("[Rp,.\\s]",
+                            NumberFormat.getCurrencyInstance().getCurrency()
+                                    .getSymbol(local));
+                    String cleanString = s.toString().replaceAll(replaceable,
+                            "");
+
+                    double parsed;
+                    try {
+                        parsed = Double.parseDouble(cleanString);
+                    } catch (NumberFormatException e) {
+                        parsed = 0.00;
+                    }
+
+                    NumberFormat formatter = NumberFormat
+                            .getCurrencyInstance(local);
+                    formatter.setMaximumFractionDigits(0);
+                    formatter.setParseIntegerOnly(true);
+                    String formatted = formatter.format((parsed));
+
+                    String replace = String.format("[Rp\\s]",
+                            NumberFormat.getCurrencyInstance().getCurrency()
+                                    .getSymbol(local));
+                    String clean = formatted.replaceAll(replace, "");
+
+                    current = formatted;
+                    edt.setText(clean);
+                    edt.setSelection(clean.length());
+                    edt.addTextChangedListener(this);
+                }
+            }
+        });
     }
 
 }

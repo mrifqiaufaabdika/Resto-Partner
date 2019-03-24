@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -72,6 +74,8 @@ public class EditDeliveryActivity extends AppCompatActivity{
         restoran = (Restoran) getIntent().getSerializableExtra("restoran");
         mContext = this;
         ButterKnife.bind(this);
+        setCurrency(mMinimumOrder);
+        setCurrency(mTarifDelivery);
         mApiService = ServerConfig.getAPIService();
         sessionManager = new SessionManager(this);
         user = sessionManager.getRestoDetail();
@@ -109,31 +113,31 @@ public class EditDeliveryActivity extends AppCompatActivity{
             mTarifDelivery.setText((restoran.getRestoranDeliveryTarif()));
         }
         mJarakMax.setText(restoran.getRestoranDeliveryJarak().toString());
-        mMinimumOrder.setText((restoran.getRestoranDeliveryMinimum().toString()));
+        mMinimumOrder.setText((kursIndonesia(Double.parseDouble(restoran.getRestoranDeliveryMinimum().toString()))));
     }
 
     @OnClick(R.id.btnSubmit) void submit (){
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.memuat), true, false);
 
         final String id_restoran = user.get(SessionManager.ID_RESTORAN);
-        final String minimumOreder = mMinimumOrder.getText().toString();
+        final String minimumOreder = mMinimumOrder.getText().toString().replaceAll("[.]","");
         final String jarakMax = mJarakMax.getText().toString();
-        final String tarifDelivery = mTarifDelivery.getText().toString();
+        final String tarifDelivery = mTarifDelivery.getText().toString().replaceAll("[.]","");
 
 
         if(minimumOreder.isEmpty()||minimumOreder.equals(null)) {
             progressDialog.dismiss();
-            mMinimumOrder.setError("Field Tidak Boleh Kosong");
+            mMinimumOrder.setError("Minimum order diperlukan");
             mMinimumOrder.requestFocus();
             return;
         }else if (jarakMax.isEmpty()||jarakMax.equals(null)) {
             progressDialog.dismiss();
-            mJarakMax.setError("Field Tidak Boleh Kosong");
+            mJarakMax.setError("Jarak maksimum diperlukan");
             mJarakMax.requestFocus();
             return;
         }else if (tarifDelivery.isEmpty()||tarifDelivery.equals(null)) {
             progressDialog.dismiss();
-            mTarifDelivery.setError("Field Tidak Boleh Kosong");
+            mTarifDelivery.setError("Tarif delivery diperlukan");
             mTarifDelivery.requestFocus();
             return;
         }else {
@@ -185,4 +189,61 @@ public class EditDeliveryActivity extends AppCompatActivity{
 
 
     }
+
+
+    private void setCurrency(final EditText edt) {
+        edt.addTextChangedListener(new TextWatcher() {
+            private String current = "";
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().equals(current)) {
+                    edt.removeTextChangedListener(this);
+
+                    Locale local = new Locale("id", "id");
+                    String replaceable = String.format("[Rp,.\\s]",
+                            NumberFormat.getCurrencyInstance().getCurrency()
+                                    .getSymbol(local));
+                    String cleanString = s.toString().replaceAll(replaceable,
+                            "");
+
+                    double parsed;
+                    try {
+                        parsed = Double.parseDouble(cleanString);
+                    } catch (NumberFormatException e) {
+                        parsed = 0.00;
+                    }
+
+                    NumberFormat formatter = NumberFormat
+                            .getCurrencyInstance(local);
+                    formatter.setMaximumFractionDigits(0);
+                    formatter.setParseIntegerOnly(true);
+                    String formatted = formatter.format((parsed));
+
+                    String replace = String.format("[Rp\\s]",
+                            NumberFormat.getCurrencyInstance().getCurrency()
+                                    .getSymbol(local));
+                    String clean = formatted.replaceAll(replace, "");
+
+                    current = formatted;
+                    edt.setText(clean);
+                    edt.setSelection(clean.length());
+                    edt.addTextChangedListener(this);
+                }
+            }
+        });
+    }
+
 }

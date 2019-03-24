@@ -157,6 +157,8 @@ public class SessionManager {
 
         user.put(RESTORAN_LAT, sharedPreferences.getString(RESTORAN_LAT,null));
         user.put(RESTORAN_LANG, sharedPreferences.getString(RESTORAN_LANG,null));
+        user.put(ALAMAT_RESTORAN, sharedPreferences.getString(ALAMAT_RESTORAN,null));
+
 
         user.put(NAMA_PEMILIK, sharedPreferences.getString(NAMA_PEMILIK,null));
         user.put(EMAIL_PEMILIK, sharedPreferences.getString(EMAIL_PEMILIK,null));
@@ -172,6 +174,7 @@ public class SessionManager {
         user.put(ID_KURIR, sharedPreferences.getString(ID_KURIR,null));
         user.put(KURIR_NAMA, sharedPreferences.getString(KURIR_NAMA,null));
         user.put(KURIR_PHONE, sharedPreferences.getString(KURIR_PHONE,null));
+
 
 
         user.put(KURIR_EMAIL, sharedPreferences.getString(KURIR_EMAIL,null));

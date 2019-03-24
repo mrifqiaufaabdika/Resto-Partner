@@ -54,6 +54,9 @@ public class Restoran implements Serializable {
     @SerializedName("restoran_delivery_tarif")
     @Expose
     private String restoranDeliveryTarif;
+    @SerializedName("restoran_pajak_pb_satu")
+    @Expose
+    private Integer restoran_pajak_pb_satu;
     @SerializedName("restoran_delivery_jarak")
     @Expose
     private Integer restoranDeliveryJarak;
@@ -247,6 +250,14 @@ public class Restoran implements Serializable {
 
     public void setJumlahKurir(Integer jumlahKurir) {
         this.jumlahKurir = jumlahKurir;
+    }
+
+    public Integer getRestoran_pajak_pb_satu() {
+        return restoran_pajak_pb_satu;
+    }
+
+    public void setRestoran_pajak_pb_satu(Integer restoran_pajak_pb_satu) {
+        this.restoran_pajak_pb_satu = restoran_pajak_pb_satu;
     }
 }
 

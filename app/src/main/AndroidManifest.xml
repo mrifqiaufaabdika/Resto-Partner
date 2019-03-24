@@ -50,7 +50,7 @@
         <activity android:name=".activities.resto.DetailOrderActivity" />
         <activity android:name=".activities.resto.AddMenuActivity" />
         <activity android:name=".activities.resto.DataKurirActivity" />
-        <activity android:name=".activities.kurir.MainKurirActivity" />
+        <activity android:name=".activities.kurir.OrderFragment" />
         <activity android:name=".activities.DeliveryActivity" />
         <activity android:name=".activities.TopUpActivity" />
 
@@ -77,7 +77,13 @@
         <activity android:name=".activities.resto.EditPemilikActivity" />
         <activity android:name=".activities.resto.EditRestoranActivity" />
         <activity android:name=".activities.resto.DetailRiwayatActivity" />
-        <activity android:name=".activities.TesFirebaseActivity"></activity>
+        <activity android:name=".activities.TesFirebaseActivity" />
+        <activity android:name=".activities.ListDeliveryActivity" />
+        <activity
+            android:name=".activities.kurir.KurirMainActivity"
+            android:label="@string/title_activity_kurir_main"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".activities.PrintActivity" />
     </application>
 
 </manifest>

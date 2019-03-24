@@ -14,13 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.abdialam.restopatner.R;
-import com.example.abdialam.restopatner.activities.kurir.MainKurirActivity;
+import com.example.abdialam.restopatner.activities.kurir.KurirMainActivity;
+import com.example.abdialam.restopatner.activities.kurir.OrderFragment;
 import com.example.abdialam.restopatner.activities.resto.MainActivity;
-import com.example.abdialam.restopatner.activities.resto.MapsActivity;
 import com.example.abdialam.restopatner.config.ServerConfig;
 import com.example.abdialam.restopatner.models.Kurir;
 import com.example.abdialam.restopatner.models.Restoran;
-import com.example.abdialam.restopatner.responses.ResponseAuth;
 import com.example.abdialam.restopatner.responses.ResponseValue;
 import com.example.abdialam.restopatner.rest.ApiService;
 import com.example.abdialam.restopatner.utils.SessionManager;
@@ -95,7 +94,7 @@ public class VerifyActifity extends AppCompatActivity {
 
 
 //      Memanggil method untuk mengirim code
-       // sendVerificationCode(phone);
+        //sendVerificationCode(phone);
     }
 
 
@@ -103,7 +102,7 @@ public class VerifyActifity extends AppCompatActivity {
     @OnClick (R.id.buttonSignIn) void signin (){
         progressDialog = ProgressDialog.show(mContext,null,getString(R.string.memuat),true,false);
 //        untuk melakukan verifikasi dari code OTP yang di inputkan
-       //  verifySignInCode();
+        //verifySignInCode();
 //        jika menguji login tanpa menggunakan code OTP
          SessionUser();
 
@@ -265,7 +264,7 @@ public class VerifyActifity extends AppCompatActivity {
                     if(value.equals("1")){
                         Toast.makeText(mContext,"Token Kurir Update",Toast.LENGTH_SHORT).show();
                         Intent intent;
-                        intent = new Intent(mContext, MainKurirActivity.class);
+                        intent = new Intent(mContext, KurirMainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();

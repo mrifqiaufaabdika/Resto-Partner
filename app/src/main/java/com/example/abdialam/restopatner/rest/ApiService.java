@@ -4,12 +4,14 @@ package com.example.abdialam.restopatner.rest;
 
 import com.example.abdialam.restopatner.responses.ResponseAuth;
 import com.example.abdialam.restopatner.responses.ResponseLaporan;
+import com.example.abdialam.restopatner.responses.ResponseLaporanDelivery;
 import com.example.abdialam.restopatner.responses.ResponseOneOrder;
 import com.example.abdialam.restopatner.responses.ResponseOrder;
 import com.example.abdialam.restopatner.responses.ResponseKurir;
 import com.example.abdialam.restopatner.responses.ResponseListKategori;
 import com.example.abdialam.restopatner.responses.ResponseMenuKategori;
 import com.example.abdialam.restopatner.responses.ResponseRestoran;
+import com.example.abdialam.restopatner.responses.ResponseSatuan;
 import com.example.abdialam.restopatner.responses.ResponseValue;
 
 import java.util.ArrayList;
@@ -64,6 +66,7 @@ public interface ApiService {
                                 @Part("menu_harga") RequestBody menu_harga,
                                 @Part("id_restoran") RequestBody id_restoran,
                                 @Part("id_kategori") RequestBody id_kategori,
+                                 @Part("id_satuan") RequestBody id_satuan,
                                  @Part("menu_discount") RequestBody menu_discount,
                                  @Part("menu_ketersediaan") RequestBody menu_ketersediaan);
 
@@ -77,6 +80,7 @@ public interface ApiService {
                                  @Part("menu_harga") RequestBody menu_harga,
                                  @Part("id_restoran") RequestBody id_restoran,
                                  @Part("id_kategori") RequestBody id_kategori,
+                                          @Part("id_satuan") RequestBody id_satuan,
                                  @Part("menu_discount") RequestBody menu_discount,
                                  @Part("menu_ketersediaan") RequestBody menu_ketersediaan);
     @FormUrlEncoded
@@ -88,6 +92,7 @@ public interface ApiService {
                                   @Field("menu_harga") String menu_harga,
                                   @Field("id_restoran") String id_restoran,
                                   @Field("id_kategori") String id_kategori,
+                                  @Field("id_satuan") String id_satuan,
                                   @Field("menu_discount") String menu_discount,
                                   @Field("menu_ketersediaan") String menu_ketersediaan);
 
@@ -116,7 +121,23 @@ public interface ApiService {
     //get all order
     @GET("order")
     Call<ResponseOrder> getOrder (@Query ("id_restoran") String id_restoran,
-                                        @Query("status[]") ArrayList<String> status);
+                                  @Query("status[]") ArrayList<String> status);
+
+    //get all order
+    @GET("order/pengantaran")
+    Call<ResponseOrder> getOrderOnDelivery (@Query ("order_delivery_id") String id,
+                                  @Query("order_delivery_type") String type);
+
+
+    //get all order
+    @GET("order/historipengantaran")
+    Call<ResponseOrder> getOrderHistoryDelivery (@Query ("order_delivery_id") String id,
+                                            @Query("order_delivery_type") String type);
+
+    //get all order
+    @GET("order/laporanpengantaran")
+    Call<ResponseLaporanDelivery> laporanDelivery (@Query ("order_delivery_id") String id,
+                                                   @Query("order_delivery_type") String type);
 
     //get all order
     @GET("order/{order}")
@@ -131,6 +152,14 @@ public interface ApiService {
                                            @Field("order_status") String status);
 
     //update status pesan
+    @FormUrlEncoded
+    @PATCH("order/{order}")
+    Call<ResponseValue> updateStatusPengantaran (@Path("order") String id_pesan,
+                                           @Field("order_status") String status,
+                                            @Field("order_delivery_id") String id,
+                                                 @Field("order_delivery_type") String type);
+
+    //update metode pesan
     @FormUrlEncoded
     @PATCH("order/{order}")
     Call<ResponseValue> changeMetodeBayar (@Path("order") String id_pesan,
@@ -187,6 +216,7 @@ public interface ApiService {
                                      @Field("restoran_phone") String restoran_phone,
                                      @Field("restoran_email") String restoran_email,
                                       @Field("restoran_alamat") String restoran_alamat,
+                                      @Field("restoran_pajak_pb_satu") Integer restoran_pajak_pb_satu,
                                       @Field("restoran_deskripsi") String restoran_deskripsi);
     //edit data restoran
     @FormUrlEncoded
@@ -218,6 +248,9 @@ public interface ApiService {
     Call<ResponseValue> setTopUp (@Field("id_restoran") String id_restoran,
                                   @Field ("id_konsumen") String id_konsumen,
                                   @Field ("value") String value);
+
+    @GET("satuan")
+    Call<ResponseSatuan> satuan();
 
 
 
