@@ -212,6 +212,10 @@ public class AddMenuActivity extends AppCompatActivity {
 
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 mediaPath = cursor.getString(columnIndex);
+
+
+
+                Toast.makeText(AddMenuActivity.this,mediaPath,Toast.LENGTH_SHORT).show();
                 // Set the Image in ImageView for Previewing the Media
                 mPhoto.setImageBitmap(BitmapFactory.decodeFile(mediaPath));
                 cursor.close();
